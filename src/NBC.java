@@ -190,7 +190,7 @@ public class NBC {
 		return p;
 	}
 
-	public Attribute getMeanAndVariance(int feature, int type) {
+	double getSampleMean(int feature, int type){
 		double sum = 0;
 		int count = 0;
 		for (AccFeat a : lib) {
@@ -199,62 +199,24 @@ public class NBC {
 				count++;
 			}
 		}
-		double mean = sum / count;
-		sum = 0;
-		count = 0;
+		return sum/count;
+	}
+	
+	double getSampleVariance(int feature, int type, double mean){
+		double sum = 0;
+		int count = 0;
 		for (AccFeat a : lib) {
 			if (a.getType() == type) {
 				sum += Math.pow((a.getFeature(feature) - mean), 2);
 				count++;
 			}
 		}
-		double var = sum / count;
-		return new Attribute(mean, var);
+		return sum / count;
 	}
 	
-	public Attribute getAvHistogramIndexAccMeanAndVariance(int type, int axis,
-			int index) {
-		double sum = 0;
-		int count = 0;
-		for (AccFeat a : lib) {
-			if (a.getType() == type) {
-				sum += a.getHistogram(axis, index);
-				count++;
-			}
-		}
-		double mean = sum / count;
-		sum = 0;
-		count = 0;
-		for (AccFeat a : lib) {
-			if (a.getType() == type) {
-				sum += Math.pow((a.getHistogram(axis, index) - mean), 2);
-				count++;
-			}
-		}
-		double var = sum / count;
-		return new Attribute(mean, var);
-	}
-
-	public Attribute getAvFFTHistogramIndexAccMeanAndVariance(int type,
-			int axis, int index) {
-		double sum = 0;
-		int count = 0;
-		for (AccFeat a : lib) {
-			if (a.getType() == type) {
-				sum += a.getFftHistogram(axis, index);
-				count++;
-			}
-		}
-		double mean = sum / count;
-		sum = 0;
-		count = 0;
-		for (AccFeat a : lib) {
-			if (a.getType() == type) {
-				sum += Math.pow((a.getFftHistogram(axis, index) - mean), 2);
-				count++;
-			}
-		}
-		double var = sum / count;
+	public Attribute getMeanAndVariance(int feature, int type) {
+		double mean = getSampleMean(feature, type);
+		double var = getSampleVariance(feature, type, mean);
 		return new Attribute(mean, var);
 	}
 
