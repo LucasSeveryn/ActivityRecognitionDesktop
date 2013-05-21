@@ -143,26 +143,6 @@ public class NBC {
 				entropy.get(i).add(getSdMeanAndVariance(i, 1));
 				entropy.get(i).add(getSdMeanAndVariance(i, 2));
 
-				// //Mean
-				// entropy.get(i).add(getMeanMeanAndVariance(i, 0));
-				// entropy.get(i).add(getMeanMeanAndVariance(i, 1));
-				// entropy.get(i).add(getMeanMeanAndVariance(i, 2));
-				//
-				// //SD
-				// entropy.get(i).add(getSdMeanAndVariance(i, 0));
-				// entropy.get(i).add(getSdMeanAndVariance(i, 1));
-				// entropy.get(i).add(getSdMeanAndVariance(i, 2));
-
-				// //gMean
-				// entropy.get(i).add(getgMeanMeanAndVariance(i, 0));
-				// entropy.get(i).add(getgMeanMeanAndVariance(i, 1));
-				// entropy.get(i).add(getgMeanMeanAndVariance(i, 2));
-				//
-				// //gSD
-				// entropy.get(i).add(getgSdMeanAndVariance(i, 0));
-				// entropy.get(i).add(getgSdMeanAndVariance(i, 1));
-				// entropy.get(i).add(getgSdMeanAndVariance(i, 2));
-
 				// avPeakDistance
 				entropy.get(i).add(getAvPeakMeanAndVariance(i, 0));
 				entropy.get(i).add(getAvPeakMeanAndVariance(i, 1));

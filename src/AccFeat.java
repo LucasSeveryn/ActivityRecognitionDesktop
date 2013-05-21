@@ -28,9 +28,10 @@ public class AccFeat {
 			case 6: return avPeakDistance[0];
 			case 7: return avPeakDistance[1];
 			case 8: return avPeakDistance[2];
-			case 9: return resultantAcc;
-		}
-		if(i>=10){
+			case 9: return crossingCount[0];
+			case 10: return crossingCount[1];
+			case 11: return crossingCount[2];
+			case 12: return resultantAcc;
 			
 		}
 		return 0;
