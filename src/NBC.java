@@ -6,6 +6,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 public class NBC {
 	ArrayList<AccFeat> lib;
 	HashMap<Integer, ArrayList<Attribute>> entropy = new HashMap<>();
+	HashMap<Integer, CMatrix> c = new HashMap<>();
 
 	public NBC(ArrayList<AccFeat> lib) {
 		this.lib = lib;
@@ -28,9 +29,68 @@ public class NBC {
 		entropy.put(7, type7Attributes);
 		entropy.put(8, type8Attributes);
 		entropy();
+		CMatrix t0 = new CMatrix(73);
+		CMatrix t1 = new CMatrix(73);
+		CMatrix t2 = new CMatrix(73);
+		CMatrix t3 = new CMatrix(73);
+		CMatrix t4 = new CMatrix(73);
+		CMatrix t5 = new CMatrix(73);
+		CMatrix t6 = new CMatrix(73);
+		CMatrix t7 = new CMatrix(73);
+		CMatrix t8 = new CMatrix(73);
+		c.put(0, t0);
+		c.put(1, t0);
+		c.put(2, t0);
+		c.put(3, t0);
+		c.put(4, t0);
+		c.put(5, t0);
+		c.put(6, t0);
+		c.put(7, t0);
+		c.put(8, t0);
+		
+		
+		
+		System.out.println("features number: " + entropy.get(0).size());
 
 	}
 
+	static void generateCMatrix(CMatrix c){
+		int d=c.getD();
+		for(int i=0;i<d;i++){
+			for(int j=0;j<d;j++){
+				double x=0;
+				
+				c.set(i, j, x);
+			}
+		}
+	}
+	
+	class CMatrix {
+		double[][] matrix;
+		int d;
+		
+		CMatrix(int d) {
+			matrix = new double[d][d];
+			this.d=d;
+		}
+
+		double get(int i,int j){
+			return matrix[i][j];
+		}
+		
+		int getD(){
+			return d;
+		}
+		
+		void set(int i,int j,double x){
+			 matrix[i][j]=x;
+		}
+	}
+	
+	
+	static double covariance(){return 0;}
+	
+	
 	class Attribute {
 		double mean;
 		double variance;
@@ -56,6 +116,10 @@ public class NBC {
 			this.variance = variance;
 		}
 	}
+	
+
+	
+	
 
 	public void entropy() {
 		/*
@@ -277,12 +341,12 @@ public class NBC {
 		return new Attribute(mean, var);
 	}
 
-	public Attribute getgMeanMeanAndVariance(int type, int index) {
+	public Attribute getMeanAndVariance(int feature, int type) {
 		double sum = 0;
 		int count = 0;
 		for (AccFeat a : lib) {
 			if (a.getType() == type) {
-				sum += a.getgMean(index);
+				sum += a.getFeature(feature);
 				count++;
 			}
 		}
@@ -291,13 +355,37 @@ public class NBC {
 		count = 0;
 		for (AccFeat a : lib) {
 			if (a.getType() == type) {
-				sum += Math.pow((a.getgMean(index) - mean), 2);
+				sum += Math.pow((a.getFeature(feature) - mean), 2);
 				count++;
 			}
 		}
 		double var = sum / count;
 		return new Attribute(mean, var);
 	}
+	
+	
+	
+//	public Attribute getgMeanMeanAndVariance(int type, int index) {
+//		double sum = 0;
+//		int count = 0;
+//		for (AccFeat a : lib) {
+//			if (a.getType() == type) {
+//				sum += a.getgMean(index);
+//				count++;
+//			}
+//		}
+//		double mean = sum / count;
+//		sum = 0;
+//		count = 0;
+//		for (AccFeat a : lib) {
+//			if (a.getType() == type) {
+//				sum += Math.pow((a.getgMean(index) - mean), 2);
+//				count++;
+//			}
+//		}
+//		double var = sum / count;
+//		return new Attribute(mean, var);
+//	}
 
 	public Attribute getSdMeanAndVariance(int type, int index) {
 		double sum = 0;
@@ -321,27 +409,27 @@ public class NBC {
 		return new Attribute(mean, var);
 	}
 
-	public Attribute getgSdMeanAndVariance(int type, int index) {
-		double sum = 0;
-		int count = 0;
-		for (AccFeat a : lib) {
-			if (a.getType() == type) {
-				sum += a.getgSd(index);
-				count++;
-			}
-		}
-		double mean = sum / count;
-		sum = 0;
-		count = 0;
-		for (AccFeat a : lib) {
-			if (a.getType() == type) {
-				sum += Math.pow((a.getgSd(index) - mean), 2);
-				count++;
-			}
-		}
-		double var = sum / count;
-		return new Attribute(mean, var);
-	}
+//	public Attribute getgSdMeanAndVariance(int type, int index) {
+//		double sum = 0;
+//		int count = 0;
+//		for (AccFeat a : lib) {
+//			if (a.getType() == type) {
+//				sum += a.getgSd(index);
+//				count++;
+//			}
+//		}
+//		double mean = sum / count;
+//		sum = 0;
+//		count = 0;
+//		for (AccFeat a : lib) {
+//			if (a.getType() == type) {
+//				sum += Math.pow((a.getgSd(index) - mean), 2);
+//				count++;
+//			}
+//		}
+//		double var = sum / count;
+//		return new Attribute(mean, var);
+//	}
 
 	public Attribute getAvPeakMeanAndVariance(int type, int index) {
 		double sum = 0.0;
@@ -458,26 +546,26 @@ public class NBC {
 		return new Attribute(mean, var);
 	}
 
-	public Attribute getgAvResAccMeanAndVariance(int type) {
-		double sum = 0;
-		int count = 0;
-		for (AccFeat a : lib) {
-			if (a.getType() == type) {
-				sum += a.getgResultantAcc();
-				count++;
-			}
-		}
-		double mean = sum / count;
-		sum = 0;
-		count = 0;
-		for (AccFeat a : lib) {
-			if (a.getType() == type) {
-				sum += Math.pow((a.getgResultantAcc() - mean), 2);
-				count++;
-			}
-		}
-		double var = sum / count;
-		return new Attribute(mean, var);
-	}
+//	public Attribute getgAvResAccMeanAndVariance(int type) {
+//		double sum = 0;
+//		int count = 0;
+//		for (AccFeat a : lib) {
+//			if (a.getType() == type) {
+//				sum += a.getgResultantAcc();
+//				count++;
+//			}
+//		}
+//		double mean = sum / count;
+//		sum = 0;
+//		count = 0;
+//		for (AccFeat a : lib) {
+//			if (a.getType() == type) {
+//				sum += Math.pow((a.getgResultantAcc() - mean), 2);
+//				count++;
+//			}
+//		}
+//		double var = sum / count;
+//		return new Attribute(mean, var);
+//	}
 
 }

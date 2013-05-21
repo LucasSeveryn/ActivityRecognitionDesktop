@@ -113,6 +113,8 @@ public class ActRecognitionDesktop {
 		return result;
 	}
 
+
+	
 	public static void loadAccelerometerData() {
 		String username = "acclibrary";
 		String password = "acclibrary";
@@ -148,11 +150,11 @@ public class ActRecognitionDesktop {
 				int type = (int) result.get("type");
 				typeCounter[type]++;
 
-				BasicDBObject gyroData = (BasicDBObject) result.get("gyro");
-				
-				BasicDBList xgData = (BasicDBList) gyroData.get("xData");
-				BasicDBList ygData = (BasicDBList) gyroData.get("yData");
-				BasicDBList zgData = (BasicDBList) gyroData.get("zData");
+//				BasicDBObject gyroData = (BasicDBObject) result.get("gyro");
+//				
+//				BasicDBList xgData = (BasicDBList) gyroData.get("xData");
+//				BasicDBList ygData = (BasicDBList) gyroData.get("yData");
+//				BasicDBList zgData = (BasicDBList) gyroData.get("zData");
 				
 				
 				BasicDBList xData = (BasicDBList) result.get("xData");
@@ -161,7 +163,7 @@ public class ActRecognitionDesktop {
 
 				AccData temp = new AccData(resultCounter, type,
 						toDoubleArrayList(xData), toDoubleArrayList(yData),
-						toDoubleArrayList(zData), toDoubleArrayList(xgData), toDoubleArrayList(ygData),toDoubleArrayList(zgData));
+						toDoubleArrayList(zData));
 
 				if(type==9) accDataLibrary.add(temp);
 				else accDataLibrary.add(temp);

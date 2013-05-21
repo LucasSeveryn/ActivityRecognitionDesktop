@@ -29,6 +29,15 @@ public class AccData implements Serializable {
 		this.type = type;
 	}
 	
+	public AccData(int id, int type, ArrayList<Double> xData, ArrayList<Double> yData,
+			ArrayList<Double> zData) {
+		this.xData = xData;
+		this.yData = yData;
+		this.zData = zData;
+
+		this.type = type;
+	}
+	
 
 	public ArrayList<Double> getxData() {
 		return xData;
