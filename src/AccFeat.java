@@ -4,13 +4,10 @@ public class AccFeat {
 	Double[] mean = new Double[3];
 	Double[] sd = new Double[3];
 	Double[] avPeakDistance = new Double[3];
-	int[][] fftHistogram = new int[3][100];
-	int[][] Histogram = new int[3][100];
+	int[][] histogram = new int[3][10];
+	int[][] fftHistogram = new int[3][10];
 	int[] crossingCount = new int[3];
 	double resultantAcc;
-//	double gresultantAcc;
-//	Double[] gmean = new Double[3];
-//	Double[] gsd = new Double[3];
 	int type;
 
 	public int getId() {
@@ -31,8 +28,14 @@ public class AccFeat {
 			case 9: return crossingCount[0];
 			case 10: return crossingCount[1];
 			case 11: return crossingCount[2];
-			case 12: return resultantAcc;
-			
+			case 12: return resultantAcc;	
+		}
+		if(i>12&&i<=histogram[0].length*3+12){
+			//System.out.println("axis: " + (int) Math.floor((i-13)/histogram[0].length) + " index: " + (i-13) % histogram[0].length);
+			return histogram[(int) Math.floor((i-13)/histogram[0].length)][(i-13) % histogram[0].length];
+		}
+		if(i>histogram[0].length*3+12){
+			return fftHistogram[(int) Math.floor((i-43)/fftHistogram[0].length)][(i-43) % fftHistogram[0].length];
 		}
 		return 0;
 	}
@@ -76,30 +79,12 @@ public class AccFeat {
 	public void setSd(int i, Double sd) {
 		this.sd[i] = sd;
 	}
-//
-//	public Double getgMean(int i) {
-//		return gmean[i];
-//	}
-//
-//	public void setgMean(int i, Double mean) {
-//		this.gmean[i] = mean;
-//	}
-//
-//	public Double getgSd(int i) {
-//		return gsd[i];
-//	}
-//
-//	public void setgSd(int i, Double sd) {
-//		this.gsd[i] = sd;
-//	}
+
 
 	public void setResultantAcc(double resultantAcc) {
 		this.resultantAcc = resultantAcc;
 	}
 
-//	public void setgResultantAcc(double gresultantAcc) {
-//		this.gresultantAcc = gresultantAcc;
-//	}
 
 	public void setAvPeakDistance(int i, double averageDistanceBetweenPeaks) {
 		this.avPeakDistance[i] = averageDistanceBetweenPeaks;
@@ -123,6 +108,7 @@ public class AccFeat {
 	}
 
 	public int getHistogram(int axis, int index) {
+//		System.out.println("axis: " + axis + " index: " + index);
 		return fftHistogram[axis][index];
 	}
 

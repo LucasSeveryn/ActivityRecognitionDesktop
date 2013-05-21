@@ -37,9 +37,7 @@ public class ActRecognitionDesktop {
 			ArrayList<Double> xData = a.getxData();
 			ArrayList<Double> yData = a.getyData();
 			ArrayList<Double> zData = a.getzData();
-//			ArrayList<Double> xgData = a.getxgData();
-//			ArrayList<Double> ygData = a.getygData();
-//			ArrayList<Double> zgData = a.getzgData();
+
 			
 			ArrayList<Double> lpfxData = FeatureExtractors.lowPassFilter(xData);
 			ArrayList<Double> lpfyData = FeatureExtractors.lowPassFilter(yData);
@@ -52,14 +50,7 @@ public class ActRecognitionDesktop {
 			temp.setSd(0, FeatureExtractors.standardDeviation(xData));
 			temp.setSd(1, FeatureExtractors.standardDeviation(yData));
 			temp.setSd(2, FeatureExtractors.standardDeviation(zData));
-			
-//			temp.setgMean(0, FeatureExtractors.calculateMean(xgData));
-//			temp.setgMean(1, FeatureExtractors.calculateMean(ygData));
-//			temp.setgMean(2, FeatureExtractors.calculateMean(zgData));
-//			
-//			temp.setgSd(0, FeatureExtractors.standardDeviation(xgData));
-//			temp.setgSd(1, FeatureExtractors.standardDeviation(ygData));
-//			temp.setgSd(2, FeatureExtractors.standardDeviation(zgData));
+
 //			
 			
 			temp.setAvPeakDistance(0,
@@ -72,10 +63,7 @@ public class ActRecognitionDesktop {
 			temp.setResultantAcc(FeatureExtractors
 					.averageResultantAcceleration(a.getxData(), a.getyData(),
 							a.getzData()));
-			
-//			FeatureExtractors.fftest(lpfxData);
-//			FeatureExtractors.fftest(lpfyData);
-//			FeatureExtractors.fftest(lpfzData);
+
 			
 			temp.setFftHistogram(0,FeatureExtractors.calcHistogram(FeatureExtractors.fftest(xData), 0, 100, 10));
 			temp.setFftHistogram(1,FeatureExtractors.calcHistogram(FeatureExtractors.fftest(yData), 0, 100, 10));
@@ -85,13 +73,7 @@ public class ActRecognitionDesktop {
 			temp.setHistogram(1,FeatureExtractors.calcHistogram(yData, -15, 15, 10));
 			temp.setHistogram(2,FeatureExtractors.calcHistogram(zData, -15, 15, 10));
 			
-//			if(temp.getType()==0)System.out.println("Type #" + temp.getType() + " bin 0: " + temp.getFftHistogram(0, 1));
-			
-			
-//			temp.setgResultantAcc(FeatureExtractors
-//					.averageResultantAcceleration(a.getxgData(), a.getygData(),
-//							a.getzgData()));
-			
+
 			temp.setCrossingCount(0, FeatureExtractors.zeroCrossingCount(FeatureExtractors.highPassFilter(lpfxData)));
 			temp.setCrossingCount(1, FeatureExtractors.zeroCrossingCount(FeatureExtractors.highPassFilter(lpfyData)));
 			temp.setCrossingCount(2, FeatureExtractors.zeroCrossingCount(FeatureExtractors.highPassFilter(lpfzData)));
@@ -150,12 +132,6 @@ public class ActRecognitionDesktop {
 				int type = (int) result.get("type");
 				typeCounter[type]++;
 
-//				BasicDBObject gyroData = (BasicDBObject) result.get("gyro");
-//				
-//				BasicDBList xgData = (BasicDBList) gyroData.get("xData");
-//				BasicDBList ygData = (BasicDBList) gyroData.get("yData");
-//				BasicDBList zgData = (BasicDBList) gyroData.get("zData");
-				
 				
 				BasicDBList xData = (BasicDBList) result.get("xData");
 				BasicDBList yData = (BasicDBList) result.get("yData");
