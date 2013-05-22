@@ -19,6 +19,7 @@ public class ActRecognitionDesktop {
 		int selection = in.nextInt();
 			NBC n = new NBC(accFeatLibrary);
 			n.classify(accUnidentifiedFeatLibrary.get(selection));
+			n.classify2(accUnidentifiedFeatLibrary.get(selection));
 		}
 
 	}
@@ -29,7 +30,7 @@ public class ActRecognitionDesktop {
 	}
 
 	public static void calculateFeatures() {
-		System.out.println("บ Building Feature Library");
+		System.out.println("ยบ Building Feature Library");
 		for (AccData a : accDataLibrary) {
 			AccFeat temp = new AccFeat();
 			temp.setId(a.getId());
@@ -80,11 +81,11 @@ public class ActRecognitionDesktop {
 			if(a.getType()==9) accUnidentifiedFeatLibrary.add(temp); else accFeatLibrary.add(temp);
 
 		}
-		System.out.println("บ Feature library size: " + accFeatLibrary.size());
+		System.out.println("ยบ Feature library size: " + accFeatLibrary.size());
 	}
 
 	public static void displayMenu() {
-		System.out.print("\n\nบ Select Action.\n (1) Identify activity with index = ");
+		System.out.print("\n\nยบ Select Action.\n (1) Identify activity with index = ");
 	}
 
 	public static ArrayList<Double> toDoubleArrayList(BasicDBList list) {
@@ -118,7 +119,7 @@ public class ActRecognitionDesktop {
 		if (database != null) {
 			acc_db = database.getCollection("accelerometer_data");
 			System.out
-					.println("บ Connection to Mongolab database established.");
+					.println("ยบ Connection to Mongolab database established.");
 			// System.out.println("  Total records:" + acc_db.count());
 
 			DBCursor results = acc_db.find();
@@ -144,7 +145,7 @@ public class ActRecognitionDesktop {
 				if(type==9) accDataLibrary.add(temp);
 				else accDataLibrary.add(temp);
 			}
-			System.out.println("บ " + resultCounter
+			System.out.println("ยบ " + resultCounter
 					+ " records loaded. Type breakdown:");
 			for (int i = 0; i < 9; i++) {
 				if (typeCounter[i] > 0)
@@ -154,7 +155,7 @@ public class ActRecognitionDesktop {
 			if(typeCounter[9]>0){
 				System.out.println("   Unidentified elements: " + typeCounter[9]);
 			}
-			System.out.println("บ Loading complete.\n");
+			System.out.println("ยบ Loading complete.\n");
 		}
 	}
 }

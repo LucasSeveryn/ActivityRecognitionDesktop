@@ -112,8 +112,8 @@ public class AccFeat {
 		return fftHistogram[axis][index];
 	}
 
-	public void setHistogram(int i, int[] fftHistogram) {
-		this.fftHistogram[i] = fftHistogram;
+	public void setHistogram(int i, int[] histogram) {
+		this.histogram[i] = histogram;
 	}
 
 }
