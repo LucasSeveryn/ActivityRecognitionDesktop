@@ -27,11 +27,13 @@ public class ActRecognitionDesktop {
 			int selection = in.nextInt();
 			NBC n = new NBC(accFeatLibrary);
 			ng = new NaiveGaussian(accFeatLibrary);
-			ng.classify(accUnidentifiedFeatLibrary.get(selection));
+			NBC nb = new NBC(accFeatLibrary);
+//			nb.classify(accUnidentifiedFeatLibrary.get(selection));
+//			ng.classify(accUnidentifiedFeatLibrary.get(selection));
 			ng.classify2(accUnidentifiedFeatLibrary.get(selection));
 			// n.classify(accUnidentifiedFeatLibrary.get(selection));
 			// n.classify2(accUnidentifiedFeatLibrary.get(selection));
-			sendEntropyData();
+//			sendEntropyData();
 		}
 
 	}
@@ -204,16 +206,15 @@ public class ActRecognitionDesktop {
 		    BasicDBObject mean7obj = new BasicDBObject("mean7", mean7);
 		    BasicDBObject mean8obj = new BasicDBObject("mean8", mean8);
     
-		    
-		    BasicDBObject var0obj = new BasicDBObject("var1", mean0);
-//		    BasicDBObject var1obj = new BasicDBObject("var2", mean1);
-		    BasicDBObject var2obj = new BasicDBObject("var3", mean2);
-		    BasicDBObject var3obj = new BasicDBObject("var4", mean3);
-//		    BasicDBObject var4obj = new BasicDBObject("var5", mean4);
-//		    BasicDBObject var5obj = new BasicDBObject("var6", mean5);
-//		    BasicDBObject var6obj = new BasicDBObject("var7", mean6);
-		    BasicDBObject var7obj = new BasicDBObject("var8", mean7);
-		    BasicDBObject var8obj = new BasicDBObject("var0", mean8);
+		    BasicDBObject var0obj = new BasicDBObject("var0", var0);
+//		    BasicDBObject var1obj = new BasicDBObject("var1", var1);
+		    BasicDBObject var2obj = new BasicDBObject("var2", var2);
+		    BasicDBObject var3obj = new BasicDBObject("var3", var3);
+//		    BasicDBObject var4obj = new BasicDBObject("var4", var4);
+//		    BasicDBObject var5obj = new BasicDBObject("var5", var5);
+//		    BasicDBObject var6obj = new BasicDBObject("var6", var6);
+		    BasicDBObject var7obj = new BasicDBObject("var7", var7);
+		    BasicDBObject var8obj = new BasicDBObject("var8", var8);
 
 		    ed.insert(mean0obj);
 //		    ed.insert(mean1obj);
