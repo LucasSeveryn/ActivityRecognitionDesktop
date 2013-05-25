@@ -1,5 +1,3 @@
-
-
 import com.mongodb.*;
 
 import java.net.UnknownHostException;
@@ -24,11 +22,12 @@ public class ActRecognitionDesktop {
 			Scanner in = new Scanner(System.in);
 			int selection = in.nextInt();
 			ng = new NaiveGaussian(accFeatLibrary);
+
 			if(selection==99){
 				sendEntropyData();	
 			}
 			else ng.classify2(accUnidentifiedFeatLibrary.get(selection));
-			
+
 		}
 
 	}
