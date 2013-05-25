@@ -15,11 +15,11 @@ import org.apache.commons.math3.linear.*;
 
 public class NBC {
 	ArrayList<AccFeat> lib;
-	HashMap<Integer, ArrayList<Attribute>> entropy = new HashMap<>();
-	HashMap<Integer, CMatrix> c = new HashMap<>();
-	HashMap<Integer, ArrayList<Double>> m = new HashMap<>();
-	HashMap<Integer, ArrayList<Double>> m2 = new HashMap<>(); // stripped means
-	HashMap<Integer, HashSet<Integer>> skippedFeatures = new HashMap<>();
+	HashMap<Integer, ArrayList<Attribute>> entropy = new HashMap<Integer, ArrayList<Attribute>>();
+	HashMap<Integer, CMatrix> c = new HashMap<Integer, CMatrix>();
+	HashMap<Integer, ArrayList<Double>> m = new HashMap<Integer, ArrayList<Double>>();
+	HashMap<Integer, ArrayList<Double>> m2 = new HashMap<Integer, ArrayList<Double>>(); // stripped means
+	HashMap<Integer, HashSet<Integer>> skippedFeatures = new HashMap<Integer, HashSet<Integer>>();
 	double A[][];
 	double mat[][];
 	int N;
@@ -103,65 +103,65 @@ public class NBC {
 
 	public NBC(ArrayList<AccFeat> lib) {
 		this.lib = lib;
-		ArrayList<Attribute> type0Attributes = new ArrayList<>();
-		ArrayList<Attribute> type1Attributes = new ArrayList<>();
-		ArrayList<Attribute> type2Attributes = new ArrayList<>();
-		ArrayList<Attribute> type3Attributes = new ArrayList<>();
-		ArrayList<Attribute> type4Attributes = new ArrayList<>();
-		ArrayList<Attribute> type5Attributes = new ArrayList<>();
-		ArrayList<Attribute> type6Attributes = new ArrayList<>();
-		ArrayList<Attribute> type7Attributes = new ArrayList<>();
-		ArrayList<Attribute> type8Attributes = new ArrayList<>();
+	    ArrayList<Attribute> type0Attributes = new ArrayList<Attribute>();
+	    ArrayList<Attribute> type1Attributes = new ArrayList<Attribute>();
+	    ArrayList<Attribute> type2Attributes = new ArrayList<Attribute>();
+	    ArrayList<Attribute> type3Attributes = new ArrayList<Attribute>();
+	    ArrayList<Attribute> type4Attributes = new ArrayList<Attribute>();
+	    ArrayList<Attribute> type5Attributes = new ArrayList<Attribute>();
+	    ArrayList<Attribute> type6Attributes = new ArrayList<Attribute>();
+	    ArrayList<Attribute> type7Attributes = new ArrayList<Attribute>();
+	    ArrayList<Attribute> type8Attributes = new ArrayList<Attribute>();
 
-		ArrayList<Double> t0mv = new ArrayList<>();
-		ArrayList<Double> t1mv = new ArrayList<>();
-		ArrayList<Double> t2mv = new ArrayList<>();
-		ArrayList<Double> t3mv = new ArrayList<>();
-		ArrayList<Double> t4mv = new ArrayList<>();
-		ArrayList<Double> t5mv = new ArrayList<>();
-		ArrayList<Double> t6mv = new ArrayList<>();
-		ArrayList<Double> t7mv = new ArrayList<>();
-		ArrayList<Double> t8mv = new ArrayList<>();
+	    ArrayList<Double> t0mv = new ArrayList<Double>();
+	    ArrayList<Double> t1mv = new ArrayList<Double>();
+	    ArrayList<Double> t2mv = new ArrayList<Double>();
+	    ArrayList<Double> t3mv = new ArrayList<Double>();
+	    ArrayList<Double> t4mv = new ArrayList<Double>();
+	    ArrayList<Double> t5mv = new ArrayList<Double>();
+	    ArrayList<Double> t6mv = new ArrayList<Double>();
+	    ArrayList<Double> t7mv = new ArrayList<Double>();
+	    ArrayList<Double> t8mv = new ArrayList<Double>();
 
-		m.put(0, t0mv);
-		// m.put(1, t1mv);
-		m.put(2, t2mv);
-		m.put(3, t3mv);
-		// m.put(4, t4mv);
-		// m.put(5, t5mv);
-		// m.put(6, t6mv);
-		m.put(7, t7mv);
-		m.put(8, t8mv);
+	    m.put(0, t0mv);
+	    // m.put(1, t1mv);
+	    m.put(2, t2mv);
+	    m.put(3, t3mv);
+	    // m.put(4, t4mv);
+	    // m.put(5, t5mv);
+	    // m.put(6, t6mv);
+	    m.put(7, t7mv);
+	    m.put(8, t8mv);
 
-		ArrayList<Double> t0mv2 = new ArrayList<>();
-		ArrayList<Double> t1mv2 = new ArrayList<>();
-		ArrayList<Double> t2mv2 = new ArrayList<>();
-		ArrayList<Double> t3mv2 = new ArrayList<>();
-		ArrayList<Double> t4mv2 = new ArrayList<>();
-		ArrayList<Double> t5mv2 = new ArrayList<>();
-		ArrayList<Double> t6mv2 = new ArrayList<>();
-		ArrayList<Double> t7mv2 = new ArrayList<>();
-		ArrayList<Double> t8mv2 = new ArrayList<>();
+	    ArrayList<Double> t0mv2 = new ArrayList<Double>();
+	    ArrayList<Double> t1mv2 = new ArrayList<Double>();
+	    ArrayList<Double> t2mv2 = new ArrayList<Double>();
+	    ArrayList<Double> t3mv2 = new ArrayList<Double>();
+	    ArrayList<Double> t4mv2 = new ArrayList<Double>();
+	    ArrayList<Double> t5mv2 = new ArrayList<Double>();
+	    ArrayList<Double> t6mv2 = new ArrayList<Double>();
+	    ArrayList<Double> t7mv2 = new ArrayList<Double>();
+	    ArrayList<Double> t8mv2 = new ArrayList<Double>();
 
-		m2.put(0, t0mv2);
-		// m2.put(1, t1mv2);
-		m2.put(2, t2mv2);
-		m2.put(3, t3mv2);
-		// m2.put(4, t4mv2);
-		// m2.put(5, t5mv2);
-		// m2.put(6, t6mv2);
-		m2.put(7, t7mv2);
-		m2.put(8, t8mv2);
+	    m2.put(0, t0mv2);
+	    // m2.put(1, t1mv2);
+	    m2.put(2, t2mv2);
+	    m2.put(3, t3mv2);
+	    // m2.put(4, t4mv2);
+	    // m2.put(5, t5mv2);
+	    // m2.put(6, t6mv2);
+	    m2.put(7, t7mv2);
+	    m2.put(8, t8mv2);
 
-		HashSet<Integer> skipped0 = new HashSet<>();
-		HashSet<Integer> skipped1 = new HashSet<>();
-		HashSet<Integer> skipped2 = new HashSet<>();
-		HashSet<Integer> skipped3 = new HashSet<>();
-		HashSet<Integer> skipped4 = new HashSet<>();
-		HashSet<Integer> skipped5 = new HashSet<>();
-		HashSet<Integer> skipped6 = new HashSet<>();
-		HashSet<Integer> skipped7 = new HashSet<>();
-		HashSet<Integer> skipped8 = new HashSet<>();
+	    HashSet<Integer> skipped0 = new HashSet<Integer>();
+	    HashSet<Integer> skipped1 = new HashSet<Integer>();
+	    HashSet<Integer> skipped2 = new HashSet<Integer>();
+	    HashSet<Integer> skipped3 = new HashSet<Integer>();
+	    HashSet<Integer> skipped4 = new HashSet<Integer>();
+	    HashSet<Integer> skipped5 = new HashSet<Integer>();
+	    HashSet<Integer> skipped6 = new HashSet<Integer>();
+	    HashSet<Integer> skipped7 = new HashSet<Integer>();
+	    HashSet<Integer> skipped8 = new HashSet<Integer>();
 
 		skippedFeatures.put(0, skipped0);
 		skippedFeatures.put(1, skipped1);
@@ -371,47 +371,6 @@ public class NBC {
 		return getDecDet(M, n);
 	} // end method getDecDet double [][] parameter
 
-	public void classify2(AccFeat q) {
-		System.out.println("\n• Starting MV Classification");
-		double[] results = new double[9];
-		double result;
-		ArrayList<Double> qf = new ArrayList<>();
-
-		for (int j = 0; j < 73; j++) {
-			qf.add(q.getFeature(j));
-		}
-
-		for (int i = 0; i < 9; i++) {
-			if (i != 1 && i != 4 && i != 5 && i != 6) {
-				results[i] = p2(qf, i);
-				System.out.println("   Type #" + i + " probability:"
-						+ Math.log(results[i]));
-			}
-		}
-
-		int maxindex = 0;
-		double maxvalue = results[0];
-		for (int i = 0; i < 9; i++) {
-			if (results[i] > results[maxindex]) {
-				maxvalue = results[i];
-				maxindex = i;
-			}
-		}
-		System.out.println("• This is an activity of type #" + maxindex);
-		for (int i = 0; i < results.length; i++) {
-			if (i != maxindex && i != 1 && i != 4 && i != 5 && i != 6) {
-				System.out.println("    Type #"
-						+ i
-						+ " : "
-						+ String.format("%.2f",
-								Math.log(results[i]) / Math.log(maxvalue))
-						+ " times less likely.");
-			}
-		}
-		System.out.println("");
-
-	}
-
 	private static double logAdd(double logX, double logY) {
 		// 1. make X the max
 		if (logY > logX) {
@@ -435,10 +394,10 @@ public class NBC {
 	}
 
 	public void classify(AccFeat q) {
-		System.out.println("\n• Starting NBC Classification");
+		System.out.println("\n? Starting NBC Classification");
 		double[] results = new double[9];
 		double result;
-		ArrayList<Double> qf = new ArrayList<>();
+		ArrayList<Double> qf = new ArrayList<Double>();
 
 		for (int j = 0; j < 73; j++) {
 			qf.add(q.getFeature(j));
@@ -482,8 +441,49 @@ public class NBC {
 		}
 		System.out.println("");
 
-		System.out.println("• This is an activity of type #" + maxindex);
+		System.out.println("? This is an activity of type #" + maxindex);
 
+	}
+
+	public void classify2(AccFeat q) {
+		System.out.println("\n? Starting MV Classification");
+		double[] results = new double[9];
+		double result;
+		ArrayList<Double> qf = new ArrayList<Double>();
+	
+		for (int j = 0; j < 73; j++) {
+			qf.add(q.getFeature(j));
+		}
+	
+		for (int i = 0; i < 9; i++) {
+			if (i != 1 && i != 4 && i != 5 && i != 6) {
+				results[i] = p2(qf, i);
+				System.out.println("   Type #" + i + " probability:"
+						+ Math.log(results[i]));
+			}
+		}
+	
+		int maxindex = 0;
+		double maxvalue = results[0];
+		for (int i = 0; i < 9; i++) {
+			if (results[i] > results[maxindex]) {
+				maxvalue = results[i];
+				maxindex = i;
+			}
+		}
+		System.out.println("? This is an activity of type #" + maxindex);
+		for (int i = 0; i < results.length; i++) {
+			if (i != maxindex && i != 1 && i != 4 && i != 5 && i != 6) {
+				System.out.println("    Type #"
+						+ i
+						+ " : "
+						+ String.format("%.2f",
+								Math.log(results[i]) / Math.log(maxvalue))
+						+ " times less likely.");
+			}
+		}
+		System.out.println("");
+	
 	}
 
 	private double p(double v, Attribute a) {
@@ -551,7 +551,7 @@ public class NBC {
 //		System.out.println("      det:" + det + "  det2: " + det2 + "  det3: "
 //				+ det3 + "  det4: " + det4);
 
-		ArrayList<Double> qfStripped = new ArrayList<>(qf);
+		ArrayList<Double> qfStripped = new ArrayList<Double>(qf);
 
 		for (int i = qfStripped.size() - 1; i > 0; i--) {
 			if (skippedFeatures.get(type).contains(new Integer(i))) {

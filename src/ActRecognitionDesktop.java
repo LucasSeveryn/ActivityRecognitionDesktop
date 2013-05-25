@@ -1,15 +1,13 @@
 
 
-import com.google.gson.*;
 import com.mongodb.*;
 
-import java.io.ObjectInputStream.GetField;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import javax.swing.plaf.ListUI;
+
+import org.bson.types.ObjectId;
 
 
 public class ActRecognitionDesktop {
@@ -25,13 +23,12 @@ public class ActRecognitionDesktop {
 			displayMenu();
 			Scanner in = new Scanner(System.in);
 			int selection = in.nextInt();
-			NBC n = new NBC(accFeatLibrary);
 			ng = new NaiveGaussian(accFeatLibrary);
-			ng.classify(accUnidentifiedFeatLibrary.get(selection));
-			ng.classify2(accUnidentifiedFeatLibrary.get(selection));
-			// n.classify(accUnidentifiedFeatLibrary.get(selection));
-			// n.classify2(accUnidentifiedFeatLibrary.get(selection));
-			sendEntropyData();
+			if(selection==99){
+				sendEntropyData();	
+			}
+			else ng.classify2(accUnidentifiedFeatLibrary.get(selection));
+			
 		}
 
 	}
@@ -184,15 +181,15 @@ public class ActRecognitionDesktop {
 		    BasicDBList var7 = new BasicDBList();
 		    BasicDBList var8 = new BasicDBList();
 		    
-		    addElements(var0, entropyMean.get(0));
-//		    addElements(var1, entropyMean.get(1));
-		    addElements(var2, entropyMean.get(2));
-		    addElements(var3, entropyMean.get(3));
-//		    addElements(var4, entropyMean.get(4));
-//		    addElements(var5, entropyMean.get(5));
-//		    addElements(var6, entropyMean.get(6));
-		    addElements(var7, entropyMean.get(7));
-		    addElements(var8, entropyMean.get(8));
+		    addElements(var0, entropyVar.get(0));
+//		    addElements(var1, entropyVar.get(1));
+		    addElements(var2, entropyVar.get(2));
+		    addElements(var3, entropyVar.get(3));
+//		    addElements(var4, entropyVar.get(4));
+//		    addElements(var5, entropyVar.get(5));
+//		    addElements(var6, entropyVar.get(6));
+		    addElements(var7, entropyVar.get(7));
+		    addElements(var8, entropyVar.get(8));
 		    
 		    BasicDBObject mean0obj = new BasicDBObject("mean0", mean0);
 //		    BasicDBObject mean1obj = new BasicDBObject("mean1", mean1);
@@ -204,16 +201,15 @@ public class ActRecognitionDesktop {
 		    BasicDBObject mean7obj = new BasicDBObject("mean7", mean7);
 		    BasicDBObject mean8obj = new BasicDBObject("mean8", mean8);
     
-		    
-		    BasicDBObject var0obj = new BasicDBObject("var1", mean0);
-//		    BasicDBObject var1obj = new BasicDBObject("var2", mean1);
-		    BasicDBObject var2obj = new BasicDBObject("var3", mean2);
-		    BasicDBObject var3obj = new BasicDBObject("var4", mean3);
-//		    BasicDBObject var4obj = new BasicDBObject("var5", mean4);
-//		    BasicDBObject var5obj = new BasicDBObject("var6", mean5);
-//		    BasicDBObject var6obj = new BasicDBObject("var7", mean6);
-		    BasicDBObject var7obj = new BasicDBObject("var8", mean7);
-		    BasicDBObject var8obj = new BasicDBObject("var0", mean8);
+		    BasicDBObject var0obj = new BasicDBObject("var0", var0);
+//		    BasicDBObject var1obj = new BasicDBObject("var1", var1);
+		    BasicDBObject var2obj = new BasicDBObject("var2", var2);
+		    BasicDBObject var3obj = new BasicDBObject("var3", var3);
+//		    BasicDBObject var4obj = new BasicDBObject("var4", var4);
+//		    BasicDBObject var5obj = new BasicDBObject("var5", var5);
+//		    BasicDBObject var6obj = new BasicDBObject("var6", var6);
+		    BasicDBObject var7obj = new BasicDBObject("var7", var7);
+		    BasicDBObject var8obj = new BasicDBObject("var8", var8);
 
 		    ed.insert(mean0obj);
 //		    ed.insert(mean1obj);
@@ -280,14 +276,18 @@ public class ActRecognitionDesktop {
 				DBObject result = results.next();
 				resultCounter++;
 
+				
+				ObjectId objid = (ObjectId) result.get("_id");
+				int id = objid.hashCode();
 				int type = (int) result.get("type");
 				typeCounter[type]++;
 
+				
 				BasicDBList xData = (BasicDBList) result.get("xData");
 				BasicDBList yData = (BasicDBList) result.get("yData");
 				BasicDBList zData = (BasicDBList) result.get("zData");
 
-				AccData temp = new AccData(resultCounter, type,
+				AccData temp = new AccData(id, type,
 						toDoubleArrayList(xData), toDoubleArrayList(yData),
 						toDoubleArrayList(zData));
 
