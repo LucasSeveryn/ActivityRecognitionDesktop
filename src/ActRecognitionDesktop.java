@@ -143,6 +143,8 @@ public class ActRecognitionDesktop {
 
 		if (database != null) {
 			ed = database.getCollection("entropy_data");
+			ed.drop();
+			ed = database.getCollection("entropy_data");
 			System.out
 					.println("º Connection to Mongolab database established.");
 			
