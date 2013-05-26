@@ -17,8 +17,6 @@ import com.mongodb.util.Hash;
 
 public class NaiveGaussian {
 	ArrayList<AccFeat> lib;
-	HashMap<Integer, ArrayList<Attribute>> entropy = new HashMap<>();
-	HashMap<Integer, ArrayList<Double>> m = new HashMap<>();
 	
 	ArrayList<ArrayList<Double>> entropyMean = new ArrayList<ArrayList<Double>>();
 	ArrayList<ArrayList<Double>> entropyVar = new ArrayList<ArrayList<Double>>();
@@ -27,16 +25,6 @@ public class NaiveGaussian {
 
 	public NaiveGaussian(ArrayList<AccFeat> lib) {
 		this.lib = lib;
-        ArrayList<Attribute> type0Attributes = new ArrayList<Attribute>();
-        ArrayList<Attribute> type1Attributes = new ArrayList<Attribute>();
-        ArrayList<Attribute> type2Attributes = new ArrayList<Attribute>();
-        ArrayList<Attribute> type3Attributes = new ArrayList<Attribute>();
-        ArrayList<Attribute> type4Attributes = new ArrayList<Attribute>();
-        ArrayList<Attribute> type5Attributes = new ArrayList<Attribute>();
-        ArrayList<Attribute> type6Attributes = new ArrayList<Attribute>();
-        ArrayList<Attribute> type7Attributes = new ArrayList<Attribute>();
-        ArrayList<Attribute> type8Attributes = new ArrayList<Attribute>();
-
         ArrayList<Double> m0 = new ArrayList<Double>();
         ArrayList<Double> m1 = new ArrayList<Double>();
         ArrayList<Double> m2 = new ArrayList<Double>();
@@ -46,8 +34,6 @@ public class NaiveGaussian {
         ArrayList<Double> m6 = new ArrayList<Double>();
         ArrayList<Double> m7 = new ArrayList<Double>();
         ArrayList<Double> m8 = new ArrayList<Double>();
-        
-        
 
         entropyMean.add(0, m0);
         entropyMean.add(1, m1);
@@ -79,17 +65,6 @@ public class NaiveGaussian {
 		entropyVar.add(7, v7);
 		entropyVar.add(8, v8);
 
-		
-		entropy.put(0, type0Attributes);
-		entropy.put(1, type1Attributes);
-		entropy.put(2, type2Attributes);
-		entropy.put(3, type3Attributes);
-		entropy.put(4, type4Attributes);
-		entropy.put(5, type5Attributes);
-		entropy.put(6, type6Attributes);
-		entropy.put(7, type7Attributes);
-		entropy.put(8, type8Attributes);
-
 		entropy();
 	}
 
@@ -99,9 +74,8 @@ public class NaiveGaussian {
 				for (int j = 0; j < 73; j++) {
 					double mean = getSampleMean(j, i);
 					entropyMean.get(i).add(mean);
-					Attribute temp = getMeanAndVariance(j, i);
-					entropy.get(i).add(temp);
-					entropyVar.get(i).add(temp.getVar());
+					double var = getSampleVariance(j, i, mean);
+					entropyVar.get(i).add(var);
 				}
 
 			}
@@ -152,7 +126,7 @@ public class NaiveGaussian {
 				
 				
 				if(results[i]!=0.0){
-					System.out.println("["+i+"] "+Math.exp(results[i]));
+					System.out.println("["+i+"] "+Math.exp(results[i]) + " log:" + results[i]);
 				}
 				if(results[i] > results[maxindex] && i != 1 && i != 4 && i != 5 && i != 6) {
 					maxvalue = results[i];
@@ -161,101 +135,23 @@ public class NaiveGaussian {
 			}
 				
 			}
-
-		for (int i = 0; i < results.length; i++) {
-			if (i != maxindex && i != 1 && i != 4 && i != 5 && i != 6) {
-				System.out.println("    Type #"
-						+ i
-						+ " : "   
-						+ String.format("%.2f", 
-								results[i] / results[maxindex]  )
-						+ " times less likely.");
-			}
-		}
+//
+//		for (int i = 0; i < results.length; i++) {
+//			if (i != maxindex && i != 1 && i != 4 && i != 5 && i != 6) {
+//				System.out.println("    Type #"
+//						+ i
+//						+ " : "   
+//						+ String.format("%.2f", 
+//								results[i] / results[maxindex]  )
+//						+ " times less likely.");
+//			}
+//		}
 		System.out.println("");
 
 		System.out.println("- This is an activity of type #" + maxindex);
 
 	}
 	
-	public void classify(AccFeat q) {
-		System.out.println("\n- Starting NBC Classification");
-		double[] results = new double[9];
-		double result;
-		ArrayList<Double> qf = new ArrayList<>();
-
-		for (int j = 0; j < 73; j++) {
-			qf.add(q.getFeature(j));
-		}
-
-		for (int i = 0; i < 9; i++) {
-			if (i != 1 && i != 4 && i != 5 && i != 6) { // debug
-				result = 1;
-				for (int j = 0; j < entropy.get(i).size(); j++) {
-					result = result * p(qf.get(j), entropy.get(i).get(j));
-
-				}
-				results[i] = result;
-			}
-		}
-
-		int maxindex = 0;
-		double maxvalue = results[0];
-		
-		for(int i=0;i<9;i++){
-			if(!Double.isNaN(results[i])){
-				maxvalue=results[i];
-				maxindex=i;
-				break;
-			}
-		}
-		
-		for (int i = 0; i < 9; i++) {
-			
-			
-			
-			if (!Double.isNaN(results[i])){
-				System.out.println("results[" + i+"] = " + results[i]);
-
-				if(results[i]>0){
-				}
-				if(results[i] > results[maxindex]) {
-					maxvalue = results[i];
-					maxindex = i;
-				}
-			}
-				
-			}
-
-		for (int i = 0; i < results.length; i++) {
-			if (i != maxindex && i != 1 && i != 4 && i != 5 && i != 6) {
-				System.out.println("    Type #"
-						+ i
-						+ " : "
-						+ String.format("%.2f",
-								Math.log(results[i]) / Math.log(maxvalue))
-						// (results[i])/(maxvalue))
-						+ " times less likely.");
-			}
-		}
-		System.out.println("");
-
-		System.out.println("- This is an activity of type #" + maxindex);
-
-	}
-
-	private double p(double v, Attribute a) {
-		double var = a.getVar();
-		if (var == 0)
-			return 1;
-		double m = a.getM();
-		double p = ((1 / (Math.sqrt(2 * Math.PI * var)) * Math.exp(-(Math.pow(v
-				- m, 2))
-				/ (2 * var))));
-
-		return p;
-	}
-
 	private double p(double v, double m, double var) {
 		if (var == 0)
 			return 1;
@@ -296,10 +192,6 @@ public class NaiveGaussian {
 		return new Attribute(mean, var);
 	}
 	
-	public HashMap<Integer, ArrayList<Attribute>> getEntropy(){
-		return entropy;
-	}
-
 	public ArrayList<ArrayList<Double>> getEntropyMean(){
 		return entropyMean;
 	}
