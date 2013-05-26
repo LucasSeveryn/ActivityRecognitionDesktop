@@ -2,6 +2,7 @@ import com.mongodb.*;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -86,11 +87,11 @@ public class ActRecognitionDesktop {
 							FeatureExtractors.fftest(zData), 0, 100, 10));
 
 			temp.setHistogram(0,
-					FeatureExtractors.calcHistogram(xData, -15, 15, 10));
+					FeatureExtractors.calcHistogram(xData, -5, 5, 10));
 			temp.setHistogram(1,
-					FeatureExtractors.calcHistogram(yData, -15, 15, 10));
+					FeatureExtractors.calcHistogram(yData, 5, 15, 10));
 			temp.setHistogram(2,
-					FeatureExtractors.calcHistogram(zData, -15, 15, 10));
+					FeatureExtractors.calcHistogram(zData, -8, 2, 10));
 
 			temp.setCrossingCount(0, FeatureExtractors
 					.zeroCrossingCount(FeatureExtractors
@@ -101,6 +102,12 @@ public class ActRecognitionDesktop {
 			temp.setCrossingCount(2, FeatureExtractors
 					.zeroCrossingCount(FeatureExtractors
 							.highPassFilter(lpfzData)));
+			
+			temp.setMaxDisplacementValue(0, Collections.max(xData)-Collections.min(xData));
+			temp.setMaxDisplacementValue(1, Collections.max(yData)-Collections.min(yData));
+			temp.setMaxDisplacementValue(2, Collections.max(zData)-Collections.min(zData));
+
+
 			if (a.getType() == 9)
 				accUnidentifiedFeatLibrary.add(temp);
 			else

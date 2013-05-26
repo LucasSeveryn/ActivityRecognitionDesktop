@@ -71,7 +71,7 @@ public class NaiveGaussian {
 	public void entropy() {
 		for (int i = 0; i < 9; i++) {
 			if (i != 1 && i != 4 && i != 5 && i != 6) {
-				for (int j = 0; j < 73; j++) {
+				for (int j = 0; j < 76; j++) {
 					double mean = getSampleMean(j, i);
 					entropyMean.get(i).add(mean);
 					double var = getSampleVariance(j, i, mean);
@@ -89,7 +89,7 @@ public class NaiveGaussian {
 		double result;
 		ArrayList<Double> qf = new ArrayList<>();
 
-		for (int j = 0; j < 73; j++) {
+		for (int j = 0; j < 76; j++) {
 			qf.add(q.getFeature(j));
 		}
 
