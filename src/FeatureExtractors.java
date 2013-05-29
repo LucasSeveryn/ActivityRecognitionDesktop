@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+
+
 import edu.emory.mathcs.jtransforms.fft.*;
 
 public final class FeatureExtractors {
@@ -258,7 +260,8 @@ public final class FeatureExtractors {
 			distances.add(maxtab.get(i) - maxtab.get(i - 1));
 		}
 
-		return calculateMeanInt(distances);
+		return 0;
+//		return calculateMeanInt(distances);
 
 	}
 
@@ -382,7 +385,8 @@ public final class FeatureExtractors {
 	public static AccFeat calculateFeatures(AccData a) {
 		AccFeat temp = new AccFeat();
 		
-			
+		temp.setId(a.getId());
+		temp.setType(a.getType());	
 		List<Double> xData = a.getxData();
 		List<Double> yData = a.getyData();
 		List<Double> zData = a.getzData();
@@ -413,12 +417,12 @@ public final class FeatureExtractors {
 				xData, yData, zData));
 
 		temp.setFftHistogram(0, FeatureExtractors.calcHistogram(
-				FeatureExtractors.fftest(xData), 0, 100, 10));
+				FeatureExtractors.fftest(xData), 0, 0, 10));
 		temp.setFftHistogram(1, FeatureExtractors.calcHistogram(
-				FeatureExtractors.fftest(yData), 0, 100, 10));
+				FeatureExtractors.fftest(yData), 0, 40, 10));
 		temp.setFftHistogram(2, FeatureExtractors.calcHistogram(
-				FeatureExtractors.fftest(zData), 0, 100, 10));
-
+				FeatureExtractors.fftest(zData), 0, 40, 10));
+		
 //		temp.setHistogram(0,
 //				FeatureExtractors2.calcHistogram(xData, -15, 15, 10));
 //		temp.setHistogram(1,
@@ -446,17 +450,17 @@ temp.setHistogram(2,
 //		temp.setCrossingCount(0, FeatureExtractors
 //			.zeroCrossingCount(FeatureExtractors.highPassFilter(lpfxData)));
 		temp.setCrossingCount(0, 0);
-		temp.setCrossingCount(1, FeatureExtractors
-				.zeroCrossingCount(FeatureExtractors.highPassFilter(lpfyData)));
-		temp.setCrossingCount(2, FeatureExtractors
-				.zeroCrossingCount(FeatureExtractors.highPassFilter(lpfzData)));
-
+//		temp.setCrossingCount(1, FeatureExtractors
+//				.zeroCrossingCount(FeatureExtractors.highPassFilter(lpfyData)));
+//		temp.setCrossingCount(2, FeatureExtractors
+//				.zeroCrossingCount(FeatureExtractors.highPassFilter(lpfzData)));
+//
 //		temp.setCrossingCount(0, FeatureExtractors
 //				.relativeZeroCrossingCount(lpfxData));
-//		temp.setCrossingCount(1, FeatureExtractors
-//				.relativeZeroCrossingCount(lpfyData));
-//		temp.setCrossingCount(2, FeatureExtractors
-//				.relativeZeroCrossingCount(lpfzData));
+		temp.setCrossingCount(1, FeatureExtractors
+				.relativeZeroCrossingCount(lpfyData));
+		temp.setCrossingCount(2, FeatureExtractors
+				.relativeZeroCrossingCount(lpfzData));
 
 		temp.setMaxDisplacementValue(0, Collections.max(xData)-Collections.min(xData));
 		temp.setMaxDisplacementValue(1, Collections.max(yData)-Collections.min(yData));
