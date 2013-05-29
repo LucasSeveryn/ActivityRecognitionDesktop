@@ -1,22 +1,51 @@
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-
 import edu.emory.mathcs.jtransforms.fft.*;
 
 public final class FeatureExtractors {
 	public final static FeatureExtractors INSTANCE = new FeatureExtractors();
-	static float alpha = 0.10f;
+	static double a = 0.1;
 
 	private FeatureExtractors() {
 		// Exists only to defeat instantiation.
 	}
 
-	public static double[] fftest(ArrayList<Double> v) {
-//		ArrayList<Double> result = new ArrayList<>();
+	public static String getType(int type) {
+		switch (type) {
+		case 0:
+			return "Walking (0)";
+		case 1:
+			return "Fast Walking (1)";
+		case 2:
+			return "Walking up the stairs (2)";
+		case 3:
+			return "Walking down the stairs (3)";
+		case 4:
+			return "Sitting (4)";
+		case 5:
+			return "Standing up (5)";
+		case 6:
+			return "Jumping (6)";
+		case 7:
+			return "Test: Wave Sideways (7)";
+		case 8:
+			return "Test: Wave Forward (8)";
+		case 9:
+			return "Test: Unidentified (9)";
+		default:
+			return "Unspecified";
+
+		}
+
+	}
+	
+	public static double[] fftest(List<Double> v) {
+		// ArrayList<Double> result = new ArrayList<>();
 		DoubleFFT_1D fftDo = new DoubleFFT_1D(v.size());
 
 		double[] fft = new double[v.size() * 2];
@@ -25,25 +54,27 @@ public final class FeatureExtractors {
 			fft[i] = v.get(i);
 		}
 		fftDo.realForwardFull(fft);
-		
+
 		double[] result = new double[v.size()];
-		
-		double max=0;
-		
-		for(int i=1; i<v.size();i++){
-			//System.out.println(Math.sqrt(fft[i]*fft[i]+fft[i+v.size()-1]*fft[i+v.size()-1]));
-			result[i-1]=Math.sqrt(fft[i]*fft[i]+fft[i+v.size()-1]*fft[i+v.size()-1]);
-			if(result[i-1]>max) max=result[i-1];
+
+		double max = 0;
+
+		for (int i = 1; i < v.size(); i++) {
+			// System.out.println(Math.sqrt(fft[i]*fft[i]+fft[i+v.size()-1]*fft[i+v.size()-1]));
+			result[i - 1] = Math.sqrt(fft[i] * fft[i] + fft[i + v.size() - 1]
+					* fft[i + v.size() - 1]);
+			if (result[i - 1] > max)
+				max = result[i - 1];
 		}
-	//	System.out.println(max);
+		// System.out.println(max);
 		return result;
-//		for (double d : fft) {
-//			result.add(d);
-//		}
-//		return result;
+		// for (double d : fft) {
+		// result.add(d);
+		// }
+		// return result;
 	}
 
-	public static int[] calcHistogram(double[] data, double min, double max,
+	public static int[] calcHistogram(List<Double> data, double min, double max,
 			int numBins) {
 		final int[] result = new int[numBins];
 		final double binSize = (max - min) / numBins;
@@ -59,7 +90,7 @@ public final class FeatureExtractors {
 		return result;
 	}
 	
-	public static int[] calcHistogram(ArrayList<Double> data, double min, double max,
+	public static int[] calcHistogram(double[] data, double min, double max,
 			int numBins) {
 		final int[] result = new int[numBins];
 		final double binSize = (max - min) / numBins;
@@ -75,6 +106,51 @@ public final class FeatureExtractors {
 		return result;
 	}
 
+	public static int[] calcHistogram(ArrayList<Double> data, double min,
+			double max, int numBins) {
+		final int[] result = new int[numBins];
+		final double binSize = (max - min) / numBins;
+
+		for (double d : data) {
+			int bin = (int) ((d - min) / binSize); // changed this from numBins
+			if (bin < 0) { /* this data is smaller than min */
+			} else if (bin >= numBins) { /* this data point is bigger than max */
+			} else {
+				result[bin] += 1;
+			}
+		}
+		return result;
+	}
+	
+	
+	public static int relativeZeroCrossingCount(List<Double> data){
+		DescriptiveStatistics stats = new DescriptiveStatistics();
+
+		// Add the data from the array
+		for (int i = 0; i < data.size(); i++) {
+			stats.addValue(data.get(i));
+		}
+		
+		double max = stats.getPercentile(80);
+		double min = stats.getPercentile(20);
+		if(max-min<0.2) return 0;
+		double zero = (max + min) /2;
+		int rate=2;
+		int count=0;
+		
+		double x;
+		double previous = data.get(0);
+		for (int i=rate;i<data.size();i= i + rate){
+			x = data.get(i);
+			if (previous < zero && x > zero || previous > zero && x < zero) {
+				count++;
+			}
+			previous = x;
+		}
+		
+		return count;
+	}
+	
 	public static int zeroCrossingCount(ArrayList<Double> data2) {
 		float spread = 0.30f;
 		int rate = 8;
@@ -100,8 +176,8 @@ public final class FeatureExtractors {
 		return count;
 	}
 
-	public static double averageResultantAcceleration(ArrayList<Double> xv,
-			ArrayList<Double> yv, ArrayList<Double> zv) {
+	public static double averageResultantAcceleration(List<Double> xv,
+			List<Double> yv, List<Double> zv) {
 		float result = 0;
 		for (int i = 0; i < xv.size(); i++) {
 			double atomicResult = 0;
@@ -121,31 +197,31 @@ public final class FeatureExtractors {
 		return result / xv.size();
 	}
 
-	public static ArrayList<Double> highPassFilter(ArrayList<Double> v) {
-		alpha = 1 - alpha;
+	public static ArrayList<Double> highPassFilter(List<Double> v) {
+		a = 1 - a;
 		ArrayList<Double> output = new ArrayList<Double>();
 		output.add(v.get(0));
 		for (int i = 1; i < v.size(); i++) {
 
-			output.add(alpha * output.get(i - 1) + alpha
+			output.add(a * output.get(i - 1) + a
 					* (v.get(i) - v.get(i - 1)));
 		}
 
 		return output;
 	}
 
-	public static ArrayList<Double> lowPassFilter(ArrayList<Double> v) {
-		ArrayList<Double> output = new ArrayList<Double>();
-
-		output.add(v.get(0));
+	public static List<Double> lowPassFilter(List<Double> v) {
+		List<Double> output = new ArrayList<Double>();
+		double n = v.get(0);
+		output.add(n);
 		for (int i = 1; i < v.size(); i++) {
-			output.add(alpha * v.get(i) + (1 - alpha) * output.get(i - 1));
+			output.add(a * v.get(i) + (1 - a) * output.get(i - 1));
 		}
 
 		return output;
 	}
 
-	public static double standardDeviation(ArrayList<Double> arrayList) {
+	public static double standardDeviation(List<Double> arrayList) {
 		DescriptiveStatistics stats = new DescriptiveStatistics();
 
 		// Add the data from the array
@@ -156,7 +232,7 @@ public final class FeatureExtractors {
 
 	}
 
-	public static double calculateMean(ArrayList<Double> arrayList) {
+	public static double calculateMean(List<Double> arrayList) {
 		Double sum = 0.0;
 		for (Double mark : arrayList) {
 			sum += mark;
@@ -164,7 +240,7 @@ public final class FeatureExtractors {
 		return sum.doubleValue() / arrayList.size();
 	}
 
-	public static double calculateMeanInt(ArrayList<Integer> arrayList) {
+	public static double calculateMeanInt(List<Integer> arrayList) {
 		Double sum = 0.0;
 		for (Integer mark : arrayList) {
 			sum += mark;
@@ -172,11 +248,11 @@ public final class FeatureExtractors {
 		return (sum.doubleValue() / arrayList.size());
 	}
 
-	public static double averageDistanceBetweenPeaks(ArrayList<Double> v) {
-		ArrayList<Integer> distances = new ArrayList<>();
+	public static double averageDistanceBetweenPeaks(List<Double> v) {
+		List<Integer> distances = new ArrayList<Integer>();
 
 		// /peak detection methodology
-		ArrayList<Integer> maxtab = peakdet(v);
+		List<Integer> maxtab = peakdet(v);
 
 		for (int i = 1; i < maxtab.size(); i++) {
 			distances.add(maxtab.get(i) - maxtab.get(i - 1));
@@ -209,7 +285,7 @@ public final class FeatureExtractors {
 		return v;
 	}
 
-	public static ArrayList<Integer> peakdet(ArrayList<Double> v) {
+	public static ArrayList<Integer> peakdet(List<Double> v) {
 		ArrayList<Integer> peakIndices = new ArrayList<Integer>();
 		double max = Collections.max(v);
 		double cutoff = max * 0.85;
@@ -238,10 +314,10 @@ public final class FeatureExtractors {
 
 	}
 
-	public static ArrayList<Integer> peakdet2(ArrayList<Double> v) {
+	public static ArrayList<Integer> peakdet2(List<Double> v) {
 		double delta = (Collections.max(v) - Collections.min(v)) * 0.5;
-		ArrayList<Integer> maxtab = new ArrayList<>();
-		ArrayList<Integer> mintab = new ArrayList<>();
+		ArrayList<Integer> maxtab = new ArrayList<Integer>();
+		ArrayList<Integer> mintab = new ArrayList<Integer>();
 
 		double mn = 10000;
 		double mx = -10000;
@@ -281,8 +357,8 @@ public final class FeatureExtractors {
 		return maxtab;
 	}
 
-	public static ArrayList<Integer> peakdetN(ArrayList<Double> v) {
-		ArrayList<Integer> maxtab = new ArrayList<>();
+	public static List<Integer> peakdetN(List<Double> v) {
+		ArrayList<Integer> maxtab = new ArrayList<Integer>();
 		double avg = calculateMean(v);
 		double sd = standardDeviation(v);
 
@@ -293,6 +369,101 @@ public final class FeatureExtractors {
 			}
 		}
 		return maxtab;
+	}
+
+	public static ArrayList<Double> fromFloat(ArrayList<Float> array){
+		ArrayList<Double> result = new ArrayList<Double>();
+		for(Float f : array){
+			result.add((double)f);
+		}
+		return result;
+	}
+	
+	public static AccFeat calculateFeatures(AccData a) {
+		AccFeat temp = new AccFeat();
+		
+			
+		List<Double> xData = a.getxData();
+		List<Double> yData = a.getyData();
+		List<Double> zData = a.getzData();
+
+		List<Double> lpfxData = FeatureExtractors.lowPassFilter(xData);
+		List<Double> lpfyData = FeatureExtractors.lowPassFilter(yData);
+		List<Double> lpfzData = FeatureExtractors.lowPassFilter(zData);
+
+		temp.setMean(0, FeatureExtractors.calculateMean(xData));
+		temp.setMean(1, FeatureExtractors.calculateMean(yData));
+		temp.setMean(2, FeatureExtractors.calculateMean(zData));
+
+		temp.setSd(0, FeatureExtractors.standardDeviation(xData));
+		temp.setSd(1, FeatureExtractors.standardDeviation(yData));
+		temp.setSd(2, FeatureExtractors.standardDeviation(zData));
+
+		//
+
+		temp.setAvPeakDistance(0,0);
+		temp.setAvPeakDistance(0,
+				FeatureExtractors.averageDistanceBetweenPeaks(lpfxData));
+		temp.setAvPeakDistance(1,
+				FeatureExtractors.averageDistanceBetweenPeaks(lpfyData));
+		temp.setAvPeakDistance(2,
+				FeatureExtractors.averageDistanceBetweenPeaks(lpfzData));
+
+		temp.setResultantAcc(FeatureExtractors.averageResultantAcceleration(
+				xData, yData, zData));
+
+		temp.setFftHistogram(0, FeatureExtractors.calcHistogram(
+				FeatureExtractors.fftest(xData), 0, 100, 10));
+		temp.setFftHistogram(1, FeatureExtractors.calcHistogram(
+				FeatureExtractors.fftest(yData), 0, 100, 10));
+		temp.setFftHistogram(2, FeatureExtractors.calcHistogram(
+				FeatureExtractors.fftest(zData), 0, 100, 10));
+
+//		temp.setHistogram(0,
+//				FeatureExtractors2.calcHistogram(xData, -15, 15, 10));
+//		temp.setHistogram(1,
+//				FeatureExtractors2.calcHistogram(yData, -15, 15, 10));
+//		temp.setHistogram(2,
+//				FeatureExtractors2.calcHistogram(zData, -15, 15, 10));
+
+		temp.setHistogram(0,
+		FeatureExtractors.calcHistogram(xData, -5, 5, 10));
+temp.setHistogram(1,
+		FeatureExtractors.calcHistogram(yData, 5, 15, 10));
+temp.setHistogram(2,
+		FeatureExtractors.calcHistogram(zData, -8, 2, 10));
+
+		
+		
+//		temp.setHistogram(0,
+//				FeatureExtractors.calcHistogram(xData, -7, 7, 10));
+//		temp.setHistogram(1,
+//				FeatureExtractors.calcHistogram(yData, 1, 16, 10));
+//		temp.setHistogram(2,
+//				FeatureExtractors.calcHistogram(zData, -14, 4, 10));
+		
+
+//		temp.setCrossingCount(0, FeatureExtractors
+//			.zeroCrossingCount(FeatureExtractors.highPassFilter(lpfxData)));
+		temp.setCrossingCount(0, 0);
+		temp.setCrossingCount(1, FeatureExtractors
+				.zeroCrossingCount(FeatureExtractors.highPassFilter(lpfyData)));
+		temp.setCrossingCount(2, FeatureExtractors
+				.zeroCrossingCount(FeatureExtractors.highPassFilter(lpfzData)));
+
+//		temp.setCrossingCount(0, FeatureExtractors
+//				.relativeZeroCrossingCount(lpfxData));
+//		temp.setCrossingCount(1, FeatureExtractors
+//				.relativeZeroCrossingCount(lpfyData));
+//		temp.setCrossingCount(2, FeatureExtractors
+//				.relativeZeroCrossingCount(lpfzData));
+
+		temp.setMaxDisplacementValue(0, Collections.max(xData)-Collections.min(xData));
+		temp.setMaxDisplacementValue(1, Collections.max(yData)-Collections.min(yData));
+		temp.setMaxDisplacementValue(2, Collections.max(zData)-Collections.min(zData));
+
+		
+		return temp;
 	}
 
 }

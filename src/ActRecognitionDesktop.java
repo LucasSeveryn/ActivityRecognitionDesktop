@@ -14,6 +14,7 @@ public class ActRecognitionDesktop {
 	static ArrayList<AccFeat> accFeatLibrary = new ArrayList<AccFeat>();
 	static ArrayList<AccFeat> accUnidentifiedFeatLibrary = new ArrayList<AccFeat>();
 	static NaiveGaussian ng;
+//	static NBC mvg;
 
 	public static void main(String[] args) {
 		loadAccelerometerData();
@@ -23,12 +24,12 @@ public class ActRecognitionDesktop {
 			Scanner in = new Scanner(System.in);
 			int selection = in.nextInt();
 			ng = new NaiveGaussian(accFeatLibrary);
-
+//			mvg = new NBC(accFeatLibrary);
 			if(selection==99){
 				sendEntropyData();	
 			}
+//			else mvg.classify2(accUnidentifiedFeatLibrary.get(selection));
 			else ng.classify2(accUnidentifiedFeatLibrary.get(selection));
-
 		}
 
 	}
@@ -44,13 +45,13 @@ public class ActRecognitionDesktop {
 			AccFeat temp = new AccFeat();
 			temp.setId(a.getId());
 			temp.setType(a.getType());
-			ArrayList<Double> xData = a.getxData();
-			ArrayList<Double> yData = a.getyData();
-			ArrayList<Double> zData = a.getzData();
+			List<Double> xData = a.getxData();
+			List<Double> yData = a.getyData();
+			List<Double> zData = a.getzData();
 
-			ArrayList<Double> lpfxData = FeatureExtractors.lowPassFilter(xData);
-			ArrayList<Double> lpfyData = FeatureExtractors.lowPassFilter(yData);
-			ArrayList<Double> lpfzData = FeatureExtractors.lowPassFilter(zData);
+			List<Double> lpfxData = FeatureExtractors.lowPassFilter(xData);
+			List<Double> lpfyData = FeatureExtractors.lowPassFilter(yData);
+			List<Double> lpfzData = FeatureExtractors.lowPassFilter(zData);
 
 			temp.setMean(0, FeatureExtractors.calculateMean(xData));
 			temp.setMean(1, FeatureExtractors.calculateMean(yData));
@@ -92,16 +93,49 @@ public class ActRecognitionDesktop {
 					FeatureExtractors.calcHistogram(yData, 5, 15, 10));
 			temp.setHistogram(2,
 					FeatureExtractors.calcHistogram(zData, -8, 2, 10));
+			
+//
+//			temp.setHistogram(0,
+//					FeatureExtractors.calcHistogram(xData, -15, 15, 10));
+//			temp.setHistogram(1,
+//					FeatureExtractors.calcHistogram(yData, -15, 15, 10));
+//			temp.setHistogram(2,
+//					FeatureExtractors.calcHistogram(zData, -15, 15, 10));
+			
+//			temp.setHistogram(0,
+//					FeatureExtractors.calcHistogram(xData, -7, 7, 10));
+//			temp.setHistogram(1,
+//					FeatureExtractors.calcHistogram(yData, 1, 16, 10));
+//			temp.setHistogram(2,
+//					FeatureExtractors.calcHistogram(zData, -14, 4, 10));
+//			
+			
 
+//			temp.setCrossingCount(0, FeatureExtractors
+//					.zeroCrossingCount(FeatureExtractors
+//							.highPassFilter(lpfxData)));
+//			temp.setCrossingCount(1, FeatureExtractors
+//					.zeroCrossingCount(FeatureExtractors
+//							.highPassFilter(lpfyData)));
+//			temp.setCrossingCount(2, FeatureExtractors
+//					.zeroCrossingCount(FeatureExtractors
+//							.highPassFilter(lpfzData)));
+
+//			temp.setCrossingCount(0, FeatureExtractors
+//			.relativeZeroCrossingCount(lpfxData));
+//	temp.setCrossingCount(1, FeatureExtractors
+//			.relativeZeroCrossingCount(lpfyData));
+//	temp.setCrossingCount(2, FeatureExtractors
+//			.relativeZeroCrossingCount(lpfzData));
+			
 			temp.setCrossingCount(0, FeatureExtractors
-					.zeroCrossingCount(FeatureExtractors
-							.highPassFilter(lpfxData)));
+					.relativeZeroCrossingCount(xData));
 			temp.setCrossingCount(1, FeatureExtractors
-					.zeroCrossingCount(FeatureExtractors
-							.highPassFilter(lpfyData)));
+					.relativeZeroCrossingCount(yData));
 			temp.setCrossingCount(2, FeatureExtractors
-					.zeroCrossingCount(FeatureExtractors
-							.highPassFilter(lpfzData)));
+					.relativeZeroCrossingCount(zData));
+
+			
 			
 			temp.setMaxDisplacementValue(0, Collections.max(xData)-Collections.min(xData));
 			temp.setMaxDisplacementValue(1, Collections.max(yData)-Collections.min(yData));
@@ -170,10 +204,10 @@ public class ActRecognitionDesktop {
 		    BasicDBList mean8 = new BasicDBList();
 		    
 		    addElements(mean0, entropyMean.get(0));
-//		    addElements(mean1, entropyMean.get(1));
+		    addElements(mean1, entropyMean.get(1));
 		    addElements(mean2, entropyMean.get(2));
 		    addElements(mean3, entropyMean.get(3));
-//		    addElements(mean4, entropyMean.get(4));
+		    addElements(mean4, entropyMean.get(4));
 //		    addElements(mean5, entropyMean.get(5));
 //		    addElements(mean6, entropyMean.get(6));
 		    addElements(mean7, entropyMean.get(7));
@@ -190,50 +224,50 @@ public class ActRecognitionDesktop {
 		    BasicDBList var8 = new BasicDBList();
 		    
 		    addElements(var0, entropyVar.get(0));
-//		    addElements(var1, entropyVar.get(1));
+		    addElements(var1, entropyVar.get(1));
 		    addElements(var2, entropyVar.get(2));
 		    addElements(var3, entropyVar.get(3));
-//		    addElements(var4, entropyVar.get(4));
+		    addElements(var4, entropyVar.get(4));
 //		    addElements(var5, entropyVar.get(5));
 //		    addElements(var6, entropyVar.get(6));
 		    addElements(var7, entropyVar.get(7));
 		    addElements(var8, entropyVar.get(8));
 		    
 		    BasicDBObject mean0obj = new BasicDBObject("mean0", mean0);
-//		    BasicDBObject mean1obj = new BasicDBObject("mean1", mean1);
+		    BasicDBObject mean1obj = new BasicDBObject("mean1", mean1);
 		    BasicDBObject mean2obj = new BasicDBObject("mean2", mean2);
 		    BasicDBObject mean3obj = new BasicDBObject("mean3", mean3);
-//		    BasicDBObject mean4obj = new BasicDBObject("mean4", mean4);
+		    BasicDBObject mean4obj = new BasicDBObject("mean4", mean4);
 //		    BasicDBObject mean5obj = new BasicDBObject("mean5", mean5);
 //		    BasicDBObject mean6obj = new BasicDBObject("mean6", mean6);
 		    BasicDBObject mean7obj = new BasicDBObject("mean7", mean7);
 		    BasicDBObject mean8obj = new BasicDBObject("mean8", mean8);
     
 		    BasicDBObject var0obj = new BasicDBObject("var0", var0);
-//		    BasicDBObject var1obj = new BasicDBObject("var1", var1);
+		    BasicDBObject var1obj = new BasicDBObject("var1", var1);
 		    BasicDBObject var2obj = new BasicDBObject("var2", var2);
 		    BasicDBObject var3obj = new BasicDBObject("var3", var3);
-//		    BasicDBObject var4obj = new BasicDBObject("var4", var4);
+		    BasicDBObject var4obj = new BasicDBObject("var4", var4);
 //		    BasicDBObject var5obj = new BasicDBObject("var5", var5);
 //		    BasicDBObject var6obj = new BasicDBObject("var6", var6);
 		    BasicDBObject var7obj = new BasicDBObject("var7", var7);
 		    BasicDBObject var8obj = new BasicDBObject("var8", var8);
 
 		    ed.insert(mean0obj);
-//		    ed.insert(mean1obj);
+		    ed.insert(mean1obj);
 		    ed.insert(mean2obj);
 		    ed.insert(mean3obj);
-//		    ed.insert(mean4obj);
+		    ed.insert(mean4obj);
 //		    ed.insert(mean5obj);
 //		    ed.insert(mean6obj);
 		    ed.insert(mean7obj);
 		    ed.insert(mean8obj);
 		    
 		    ed.insert(var0obj);
-//		    ed.insert(var1obj);
+		    ed.insert(var1obj);
 		    ed.insert(var2obj);
 		    ed.insert(var3obj);
-//		    ed.insert(var4obj);
+		    ed.insert(var4obj);
 //		    ed.insert(var5obj);
 //		    ed.insert(var6obj);
 		    ed.insert(var7obj);

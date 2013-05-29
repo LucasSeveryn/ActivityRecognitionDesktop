@@ -59,9 +59,9 @@ public class NBC {
 			this.d = d;
 			int ii = 0;
 			int jj = 0;
-			for (int i = 0; i < 73; i++) {
+			for (int i = 0; i < 13; i++) {
 				if (!skippedFeatures.get(type).contains(new Integer(i))) {
-					for (int j = 0; j < 73; j++) {
+					for (int j = 0; j < 13; j++) {
 						if (!skippedFeatures.get(type).contains(new Integer(j))) {
 							double covariance = getCovariance(i, j, type);
 //							if(covariance<0.10&&covariance>-0.10){
@@ -124,7 +124,7 @@ public class NBC {
 	    ArrayList<Double> t8mv = new ArrayList<Double>();
 
 	    m.put(0, t0mv);
-	    // m.put(1, t1mv);
+	     m.put(1, t1mv);
 	    m.put(2, t2mv);
 	    m.put(3, t3mv);
 	    // m.put(4, t4mv);
@@ -144,7 +144,7 @@ public class NBC {
 	    ArrayList<Double> t8mv2 = new ArrayList<Double>();
 
 	    m2.put(0, t0mv2);
-	    // m2.put(1, t1mv2);
+	     m2.put(1, t1mv2);
 	    m2.put(2, t2mv2);
 	    m2.put(3, t3mv2);
 	    // m2.put(4, t4mv2);
@@ -185,15 +185,15 @@ public class NBC {
 
 		entropy();
 
-		CMatrix t0 = new CMatrix(73 - skippedFeatures.get(0).size(), 0);
-		// CMatrix t1 = new CMatrix(73-skippedFeatures.get(1).size(), 1);
-		CMatrix t2 = new CMatrix(73 - skippedFeatures.get(2).size(), 2);
-		CMatrix t3 = new CMatrix(73 - skippedFeatures.get(3).size(), 3);
-		// CMatrix t4 = new CMatrix(73-skippedFeatures.get(4).size(), 4);
-		// CMatrix t5 = new CMatrix(73-skippedFeatures.get(5).size(), 5);
-		// CMatrix t6 = new CMatrix(73-skippedFeatures.get(6).size(), 6);
-		CMatrix t7 = new CMatrix(73 - skippedFeatures.get(7).size(), 7);
-		CMatrix t8 = new CMatrix(73 - skippedFeatures.get(8).size(), 8);
+		CMatrix t0 = new CMatrix(13 - skippedFeatures.get(0).size(), 0);
+		// CMatrix t1 = new CMatrix(13-skippedFeatures.get(1).size(), 1);
+		CMatrix t2 = new CMatrix(13 - skippedFeatures.get(2).size(), 2);
+		CMatrix t3 = new CMatrix(13 - skippedFeatures.get(3).size(), 3);
+		// CMatrix t4 = new CMatrix(13-skippedFeatures.get(4).size(), 4);
+		// CMatrix t5 = new CMatrix(13-skippedFeatures.get(5).size(), 5);
+		// CMatrix t6 = new CMatrix(13-skippedFeatures.get(6).size(), 6);
+		CMatrix t7 = new CMatrix(13 - skippedFeatures.get(7).size(), 7);
+		CMatrix t8 = new CMatrix(13 - skippedFeatures.get(8).size(), 8);
 		c.put(0, t0);
 		// c.put(1, t1);
 		c.put(2, t2);
@@ -210,8 +210,8 @@ public class NBC {
 
 	public void entropy() {
 		for (int i = 0; i < 9; i++) {
-			if (i != 1 && i != 4 && i != 5 && i != 6) {
-				for (int j = 0; j < 73; j++) {
+			if ( i != 4 && i != 5 && i != 6) {
+				for (int j = 0; j < 13; j++) {
 					double mean = getSampleMean(j, i);
 //					if (mean<0.5&&mean>-0.05) {
 					if (mean==0){
@@ -399,12 +399,13 @@ public class NBC {
 		double result;
 		ArrayList<Double> qf = new ArrayList<Double>();
 
-		for (int j = 0; j < 73; j++) {
+		for (int j = 0; j < 13; j++) {
 			qf.add(q.getFeature(j));
 		}
 
+
 		for (int i = 0; i < 9; i++) {
-			if (i != 1 && i != 4 && i != 5 && i != 6) { // debug
+			if ( i != 4 && i != 5 && i != 6) { // debug
 				result = 1;
 				for (int j = 0; j < entropy.get(i).size(); j++) {
 					result = result * p(qf.get(j), entropy.get(i).get(j));
@@ -429,7 +430,7 @@ public class NBC {
 			}
 		}
 		for (int i = 0; i < results.length; i++) {
-			if (i != maxindex && i != 1 && i != 4 && i != 5 && i != 6) {
+			if (i != maxindex &&  i != 4 && i != 5 && i != 6) {
 				System.out.println("    Type #"
 						+ i
 						+ " : "
@@ -451,12 +452,12 @@ public class NBC {
 		double result;
 		ArrayList<Double> qf = new ArrayList<Double>();
 	
-		for (int j = 0; j < 73; j++) {
+		for (int j = 0; j < 13; j++) {
 			qf.add(q.getFeature(j));
 		}
 	
 		for (int i = 0; i < 9; i++) {
-			if (i != 1 && i != 4 && i != 5 && i != 6) {
+			if ( i != 4 && i != 5 && i != 6) {
 				results[i] = p2(qf, i);
 				System.out.println("   Type #" + i + " probability:"
 						+ Math.log(results[i]));
@@ -473,7 +474,7 @@ public class NBC {
 		}
 		System.out.println("? This is an activity of type #" + maxindex);
 		for (int i = 0; i < results.length; i++) {
-			if (i != maxindex && i != 1 && i != 4 && i != 5 && i != 6) {
+			if (i != maxindex  && i != 4 && i != 5 && i != 6) {
 				System.out.println("    Type #"
 						+ i
 						+ " : "
@@ -538,13 +539,13 @@ public class NBC {
 		
 //		double detinv= coeff_inv.det();
 //		System.out.println("detinv: " + detinv + " det: " + det);
-		coeff.print(50, 40);
+//		coeff.print(50, 40);
 		
 //		double det = coeff.det();
 //		 double det2 = determinant5(c.get(type).getMatrix(),56);
 //		double det2 = 0;
 		// double det3 =
-		// determinant3(c.get(type).getMatrix(),73-skippedFeatures.get(type).size());
+		// determinant3(c.get(type).getMatrix(),13-skippedFeatures.get(type).size());
 //		double det3 = 0;
 		// double det4 = determinant4(c.get(type).getMatrix());
 //		double det4 = 0;
@@ -562,11 +563,11 @@ public class NBC {
 		double result = Math.pow((2 * Math.PI), -coeff.getRowDimension() / 2);
 		result *= Math.pow(coeff.det(), -0.5);
 
-		double[][] xminusmt = new double[1][73 - skippedFeatures.get(type)
+		double[][] xminusmt = new double[1][13 - skippedFeatures.get(type)
 				.size()];
-		double[][] xminusm = new double[73 - skippedFeatures.get(type).size()][1];
+		double[][] xminusm = new double[13 - skippedFeatures.get(type).size()][1];
 		double difference;
-		for (int i = 0; i < (73 - skippedFeatures.get(type).size()); i++) {
+		for (int i = 0; i < (13 - skippedFeatures.get(type).size()); i++) {
 //			difference = (double)Math.round(qfStripped.get(i) - m2.get(type).get(i) * 100) / 100;
 			difference = qfStripped.get(i) - m2.get(type).get(i);
 			xminusmt[0][i] = difference;

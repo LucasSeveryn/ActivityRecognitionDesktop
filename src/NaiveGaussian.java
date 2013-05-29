@@ -70,7 +70,7 @@ public class NaiveGaussian {
 
 	public void entropy() {
 		for (int i = 0; i < 9; i++) {
-			if (i != 1 && i != 4 && i != 5 && i != 6) {
+			if ( i != 5 && i != 6) {
 				for (int j = 0; j < 76; j++) {
 					double mean = getSampleMean(j, i);
 					entropyMean.get(i).add(mean);
@@ -94,7 +94,7 @@ public class NaiveGaussian {
 		}
 
 		for (int i = 0; i < 9; i++) {
-			if (i != 1 && i != 4 && i != 5 && i != 6) { // debug
+			if ( i != 5 && i != 6) { // debug
 //				result = 1;
 				result = 0;
 				for (int j = 0; j < entropyMean.get(i).size(); j++) {
@@ -111,7 +111,7 @@ public class NaiveGaussian {
 		double maxvalue = results[0];
 
 		for(int i=0;i<9;i++){
-			if(i!= 1 && i != 4 && i != 5 && i != 6&&!Double.isNaN(results[i])){
+			if(i != 5 && i != 6&&!Double.isNaN(results[i])){
 				maxvalue=results[i];
 				maxindex=i;
 				break;
@@ -128,7 +128,7 @@ public class NaiveGaussian {
 				if(results[i]!=0.0){
 					System.out.println("["+i+"] "+Math.exp(results[i]) + " log:" + results[i]);
 				}
-				if(results[i] > results[maxindex] && i != 1 && i != 4 && i != 5 && i != 6) {
+				if(results[i] > results[maxindex] && i != 5 && i != 6) {
 					maxvalue = results[i];
 					maxindex = i;
 				}
