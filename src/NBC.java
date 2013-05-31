@@ -210,7 +210,7 @@ public class NBC {
 
 	public void entropy() {
 		for (int i = 0; i < 9; i++) {
-			if ( i != 4 && i != 5 && i != 6) {
+			if ( i != 6) {
 				for (int j = 0; j < 13; j++) {
 					double mean = getSampleMean(j, i);
 //					if (mean<0.5&&mean>-0.05) {
@@ -405,7 +405,7 @@ public class NBC {
 
 
 		for (int i = 0; i < 9; i++) {
-			if ( i != 4 && i != 5 && i != 6) { // debug
+			if (i != 6) { // debug
 				result = 1;
 				for (int j = 0; j < entropy.get(i).size(); j++) {
 					result = result * p(qf.get(j), entropy.get(i).get(j));

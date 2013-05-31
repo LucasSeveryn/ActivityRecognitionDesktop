@@ -70,16 +70,32 @@ public class NaiveGaussian {
 
 	public void entropy() {
 		for (int i = 0; i < 9; i++) {
-			if ( i != 5 && i != 6) {
-				for (int j = 0; j < 76; j++) {
+			if ( i != 6) {
+				for (int j = 0; j < 6; j++) {
 					double mean = getSampleMean(j, i);
 					entropyMean.get(i).add(mean);
 					double var = getSampleVariance(j, i, mean);
 					entropyVar.get(i).add(var);
 				}
-
+				for (int j = 17; j < 24; j++) {
+					double mean = getSampleMean(j, i);
+					entropyMean.get(i).add(mean);
+					double var = getSampleVariance(j, i, mean);
+					entropyVar.get(i).add(var);
+				}
+				
+				for (int j = 84; j < 95; j++) {
+					double mean = getSampleMean(j, i);
+					entropyMean.get(i).add(mean);
+					double var = getSampleVariance(j, i, mean);
+					entropyVar.get(i).add(var);
+				}
+				
 			}
 		}
+		
+		
+		
 
 	}
 
@@ -89,12 +105,20 @@ public class NaiveGaussian {
 		double result;
 		ArrayList<Double> qf = new ArrayList<>();
 
-		for (int j = 0; j < 76; j++) {
+		for (int j = 0; j < 6; j++) {
 			qf.add(q.getFeature(j));
 		}
-
+		for (int j = 17; j < 24; j++) {
+			qf.add(q.getFeature(j));
+		}
+		for (int j = 84; j < 95; j++) {
+			qf.add(q.getFeature(j));
+		}
+		
+		
+		
 		for (int i = 0; i < 9; i++) {
-			if ( i != 5 && i != 6) { // debug
+			if (i != 6) { // debug
 //				result = 1;
 				result = 0;
 				for (int j = 0; j < entropyMean.get(i).size(); j++) {
@@ -111,7 +135,7 @@ public class NaiveGaussian {
 		double maxvalue = results[0];
 
 		for(int i=0;i<9;i++){
-			if(i != 5 && i != 6&&!Double.isNaN(results[i])){
+			if(i != 6&&!Double.isNaN(results[i])){
 				maxvalue=results[i];
 				maxindex=i;
 				break;
@@ -128,24 +152,24 @@ public class NaiveGaussian {
 				if(results[i]!=0.0){
 					System.out.println("["+i+"] "+Math.exp(results[i]) + " log:" + results[i]);
 				}
-				if(results[i] > results[maxindex] && i != 5 && i != 6) {
+				if(results[i] > results[maxindex]  && i != 6) {
 					maxvalue = results[i];
 					maxindex = i;
 				}
 			}
 				
 			}
-//
-//		for (int i = 0; i < results.length; i++) {
-//			if (i != maxindex && i != 1 && i != 4 && i != 5 && i != 6) {
-//				System.out.println("    Type #"
-//						+ i
-//						+ " : "   
-//						+ String.format("%.2f", 
-//								results[i] / results[maxindex]  )
-//						+ " times less likely.");
-//			}
-//		}
+
+		for (int i = 0; i < results.length; i++) {
+			if (i != maxindex  && i != 6) {
+				System.out.println("    Type #"
+						+ i
+						+ " : "   
+						+ String.format("%.2f", 
+								results[i] / results[maxindex]  )
+						+ " times less likely.");
+			}
+		}
 		System.out.println("");
 
 		System.out.println("- This is an activity of type #" + maxindex);
