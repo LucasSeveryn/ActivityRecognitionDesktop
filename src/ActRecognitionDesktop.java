@@ -19,11 +19,13 @@ public class ActRecognitionDesktop {
 	public static void main(String[] args) {
 		loadAccelerometerData();
 		calculateFeatures();
+		ng = new NaiveGaussian(accFeatLibrary);
+		WekaFileGenerator.generateFile(accFeatLibrary);
+		
 		while (true) {
 			displayMenu();
 			Scanner in = new Scanner(System.in);
 			int selection = in.nextInt();
-			ng = new NaiveGaussian(accFeatLibrary);
 //			mvg = new NBC(accFeatLibrary);
 			if(selection==99){
 				sendEntropyData();	
@@ -207,8 +209,8 @@ public class ActRecognitionDesktop {
 		}
 
 		if (database != null) {
-			acc_db = database.getCollection("accelerometer_data");
-//			acc_db = database.getCollection("accelerometer_data_new");
+//			acc_db = database.getCollection("accelerometer_data");
+			acc_db = database.getCollection("accelerometer_data_new");
 			System.out
 					.println("º Connection to Mongolab database established.");
 			// System.out.println("  Total records:" + acc_db.count());

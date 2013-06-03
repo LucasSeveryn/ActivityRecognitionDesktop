@@ -19,6 +19,14 @@ public class AccFeat {
 		return id;
 	}
 
+	public double[] getFeatureVector(){
+		double[] result = new double[96];
+		for (int j = 0; j < 95; j++) {
+			result[j]=getFeature(j);
+		}
+		return result;
+	}
+	
 	public double getFeature(int i) {
 		switch (i) {
 		case 0:
