@@ -20,7 +20,7 @@ public class ActRecognitionDesktop {
 		loadAccelerometerData();
 		calculateFeatures();
 		ng = new NaiveGaussian(accFeatLibrary);
-		WekaFileGenerator.generateFile(accFeatLibrary);
+		
 		
 		while (true) {
 			displayMenu();
@@ -30,8 +30,11 @@ public class ActRecognitionDesktop {
 			if(selection==99){
 				sendEntropyData();	
 			}
+			else if(selection==66){
+				WekaFileGenerator.generateFile(accFeatLibrary);	
+			}else
 //			else mvg.classify2(accUnidentifiedFeatLibrary.get(selection));
-			else ng.classify2(accUnidentifiedFeatLibrary.get(selection));
+			ng.classify2(accUnidentifiedFeatLibrary.get(selection));
 		}
 
 	}
@@ -48,7 +51,7 @@ public class ActRecognitionDesktop {
 			
 			if (a.getType() == 9)
 				accUnidentifiedFeatLibrary.add(temp);
-			else
+			else if (a.getType()<7)
 				accFeatLibrary.add(temp);
 
 		}
@@ -114,8 +117,8 @@ public class ActRecognitionDesktop {
 		    addElements(mean4, entropyMean.get(4));
 		    addElements(mean5, entropyMean.get(5));
 //		    addElements(mean6, entropyMean.get(6));
-		    addElements(mean7, entropyMean.get(7));
-		    addElements(mean8, entropyMean.get(8));
+//		    addElements(mean7, entropyMean.get(7));
+//		    addElements(mean8, entropyMean.get(8));
 		    
 		    BasicDBList var0 = new BasicDBList();
 		    BasicDBList var1 = new BasicDBList();
@@ -123,9 +126,9 @@ public class ActRecognitionDesktop {
 		    BasicDBList var3 = new BasicDBList();
 		    BasicDBList var4 = new BasicDBList();
 		    BasicDBList var5 = new BasicDBList();
-		    BasicDBList var6 = new BasicDBList();
-		    BasicDBList var7 = new BasicDBList();
-		    BasicDBList var8 = new BasicDBList();
+//		    BasicDBList var6 = new BasicDBList();
+//		    BasicDBList var7 = new BasicDBList();
+//		    BasicDBList var8 = new BasicDBList();
 		    
 		    addElements(var0, entropyVar.get(0));
 		    addElements(var1, entropyVar.get(1));
@@ -134,8 +137,8 @@ public class ActRecognitionDesktop {
 		    addElements(var4, entropyVar.get(4));
 		    addElements(var5, entropyVar.get(5));
 //		    addElements(var6, entropyVar.get(6));
-		    addElements(var7, entropyVar.get(7));
-		    addElements(var8, entropyVar.get(8));
+//		    addElements(var7, entropyVar.get(7));
+//		    addElements(var8, entropyVar.get(8));
 		    
 		    BasicDBObject mean0obj = new BasicDBObject("mean0", mean0);
 		    BasicDBObject mean1obj = new BasicDBObject("mean1", mean1);
@@ -144,8 +147,8 @@ public class ActRecognitionDesktop {
 		    BasicDBObject mean4obj = new BasicDBObject("mean4", mean4);
 		    BasicDBObject mean5obj = new BasicDBObject("mean5", mean5);
 //		    BasicDBObject mean6obj = new BasicDBObject("mean6", mean6);
-		    BasicDBObject mean7obj = new BasicDBObject("mean7", mean7);
-		    BasicDBObject mean8obj = new BasicDBObject("mean8", mean8);
+//		    BasicDBObject mean7obj = new BasicDBObject("mean7", mean7);
+//		    BasicDBObject mean8obj = new BasicDBObject("mean8", mean8);
     
 		    BasicDBObject var0obj = new BasicDBObject("var0", var0);
 		    BasicDBObject var1obj = new BasicDBObject("var1", var1);
@@ -154,8 +157,8 @@ public class ActRecognitionDesktop {
 		    BasicDBObject var4obj = new BasicDBObject("var4", var4);
 		    BasicDBObject var5obj = new BasicDBObject("var5", var5);
 //		    BasicDBObject var6obj = new BasicDBObject("var6", var6);
-		    BasicDBObject var7obj = new BasicDBObject("var7", var7);
-		    BasicDBObject var8obj = new BasicDBObject("var8", var8);
+//		    BasicDBObject var7obj = new BasicDBObject("var7", var7);
+//		    BasicDBObject var8obj = new BasicDBObject("var8", var8);
 
 		    ed.insert(mean0obj);
 		    ed.insert(mean1obj);
@@ -164,8 +167,8 @@ public class ActRecognitionDesktop {
 		    ed.insert(mean4obj);
 		    ed.insert(mean5obj);
 //		    ed.insert(mean6obj);
-		    ed.insert(mean7obj);
-		    ed.insert(mean8obj);
+//		    ed.insert(mean7obj);
+//		    ed.insert(mean8obj);
 		    
 		    ed.insert(var0obj);
 		    ed.insert(var1obj);
@@ -174,8 +177,8 @@ public class ActRecognitionDesktop {
 		    ed.insert(var4obj);
 		    ed.insert(var5obj);
 //		    ed.insert(var6obj);
-		    ed.insert(var7obj);
-		    ed.insert(var8obj);
+//		    ed.insert(var7obj);
+//		    ed.insert(var8obj);
 		    
 		    
 		    }
