@@ -14,6 +14,7 @@ public class ActRecognitionDesktop {
 	static ArrayList<AccFeat> accFeatLibrary = new ArrayList<AccFeat>();
 	static ArrayList<AccFeat> accUnidentifiedFeatLibrary = new ArrayList<AccFeat>();
 	static NaiveGaussian ng;
+	static boolean splitIntoTwo = true; 
 //	static NBC mvg;
 
 	public static void main(String[] args) {
@@ -63,8 +64,8 @@ public class ActRecognitionDesktop {
 				.print("\n\nº Select Action.\n (1) Identify activity with index = ");
 	}
 
-	public static ArrayList<Double> toDoubleArrayList(BasicDBList list) {
-		ArrayList<Double> result = new ArrayList<Double>();
+	public static List<Double> toDoubleList(BasicDBList list) {
+		List<Double> result = new ArrayList<Double>();
 		for (int i = 0; i < list.size(); i++) {
 			result.add((Double) list.get(i));
 		}
@@ -237,14 +238,21 @@ public class ActRecognitionDesktop {
 				BasicDBList yData = (BasicDBList) result.get("yData");
 				BasicDBList zData = (BasicDBList) result.get("zData");
 
-				AccData temp = new AccData(id, type,
-						toDoubleArrayList(xData), toDoubleArrayList(yData),
-						toDoubleArrayList(zData));
+				AccData temp = new AccData(type,
+						toDoubleList(xData), toDoubleList(yData),
+						toDoubleList(zData));
 
-				if (type == 9)
+//				if (type == 9)
+//					accDataLibrary.add(temp);
+//				else 
+				if (splitIntoTwo){
+					accDataLibrary.add(temp.getFirstHalfOfElements());
+					accDataLibrary.add(temp.getSecondHalfOfElements());
+				}else{
 					accDataLibrary.add(temp);
-				else
-					accDataLibrary.add(temp);
+				}
+					
+					
 			}
 			System.out.println("º " + resultCounter
 					+ " records loaded. Type breakdown:");

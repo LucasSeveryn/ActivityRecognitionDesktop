@@ -1,76 +1,125 @@
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class AccData implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4027578149606001414L;
-	private ArrayList<Double> xData;
-	private ArrayList<Double> yData;
-	private ArrayList<Double> zData;
-	private ArrayList<Double> xgData;
-	private ArrayList<Double> ygData;
-	private ArrayList<Double> zgData;
-	private int id; 
-	private int type;
+	private List<Double> xData;
+	private List<Double> yData;
+	private List<Double> zData;
+	private int type=9;
+//	private float[] averageNoise;
 
+	public AccData() {
+		xData = new ArrayList<Double>();
+		yData = new ArrayList<Double>();
+		zData = new ArrayList<Double>();
+	}
+	
+	public double getXMiddleValue(){
+		return (Collections.max(xData) + Collections.min(xData))/2;
+	}
+	
+	public double getYMiddleValue(){
+		return (Collections.max(yData) + Collections.min(yData))/2;
+	}
+	
+	public double getZMiddleValue(){
+		return (Collections.max(zData) + Collections.min(zData))/2;
+	}
+	
+	public int size(){
+		return xData.size();
+	}
+	
+//	public float[] getNoise() {
+//	//	return averageNoise;
+//
+//	}
 
-	public AccData(int id, int type, ArrayList<Double> xData, ArrayList<Double> yData,
-			ArrayList<Double> zData, ArrayList<Double> xgData, ArrayList<Double> ygData, ArrayList<Double> zgData) {
+	public AccData(int type,List<Double> xData, List<Double> yData,
+			List<Double> zData) {
 		this.xData = xData;
 		this.yData = yData;
 		this.zData = zData;
-		this.xgData = xgData;
-		this.ygData = ygData;
-		this.zgData = zgData;
-		this.type = type;
+		this.type=type;
 	}
-	
-	public AccData(int id, int type, ArrayList<Double> xData, ArrayList<Double> yData,
-			ArrayList<Double> zData) {
-		this.xData = xData;
-		this.yData = yData;
-		this.zData = zData;
 
-		this.type = type;
-	}
-	
 
-	public ArrayList<Double> getxData() {
+	
+	public List<Double> getxData() {
 		return xData;
 	}
 
-	public ArrayList<Double> getyData() {
+	public void setxData(List<Double> xData) {
+		this.xData = xData;
+	}
+
+	public List<Double> getyData() {
 		return yData;
 	}
 
-	public ArrayList<Double> getzData() {
+	public void setyData(List<Double> yData) {
+		this.yData = yData;
+	}
+
+	public List<Double> getzData() {
 		return zData;
 	}
+
+	public void setzData(List<Double> zData) {
+		this.zData = zData;
+	}
+
+	public void clear() {
+		xData.clear();
+		yData.clear();
+		zData.clear();
+	}
+
+	public void addX(double x) {
+		xData.add(x);
+	}
+
+	public void addZ(double z) {
+		zData.add(z);
+	}
+
+	public void addY(double y) {
+		yData.add(y);
+	}
 	
-	public ArrayList<Double> getxgData() {
-		return xgData;
+	public AccData getSecondHalfOfElements(){
+		List<Double> xDatar = this.xData.subList(256, xData.size());
+		List<Double> yDatar = this.yData.subList(256, xData.size());
+		List<Double> zDatar = this.zData.subList(256, xData.size());
+		AccData result = new AccData(this.type,xDatar, yDatar, zDatar);
+		return result;
+	}
+	
+	public AccData getFirstHalfOfElements(){
+		List<Double> xDatar = this.xData.subList(0, 255);
+		List<Double> yDatar = this.yData.subList(0, 255);
+		List<Double> zDatar = this.zData.subList(0, 255);
+		AccData result = new AccData(this.type,xDatar, yDatar, zDatar);
+		return result;
 	}
 
-	public ArrayList<Double> getygData() {
-		return ygData;
-	}
-
-	public ArrayList<Double> getzgData() {
-		return zgData;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-
-
+	
 
 	public int getType() {
 		return type;
 	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+//	public void setNoise(float[] averageNoise) {
+//		this.averageNoise = averageNoise;
+//	}
 }
