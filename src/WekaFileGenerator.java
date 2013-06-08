@@ -117,17 +117,6 @@ public final class WekaFileGenerator {
 			    // add
 			    data.add(new Instance(1.0, vals));
 		    }
-		   
-
-//		    // second instance
-//		    vals = new double[data.numAttributes()];  // important: needs NEW array!
-//		    // - numeric
-//		    vals[0] = Math.E;
-//		    // - nominal
-//		    vals[1] = attVals.indexOf("1");
-//		    data.add(new Instance(1.0, vals));
-
-		    // 4. output data
 
 		    PrintStream out;
 			try {
