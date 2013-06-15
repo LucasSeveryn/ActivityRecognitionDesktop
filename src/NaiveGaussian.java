@@ -1,189 +1,42 @@
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.apache.commons.math3.stat.correlation.Covariance;
-import org.apache.commons.math3.util.MathUtils;
-
-import Jama.CholeskyDecomposition;
-import Jama.LUDecomposition;
-import Jama.Matrix;
-import org.apache.commons.math3.linear.*;
-
-import com.mongodb.util.Hash;
+import org.apache.commons.math3.*;
+import org.apache.commons.math3.util.Pair;
 
 public class NaiveGaussian {
-	ArrayList<AccFeat> lib;
+	List<AccFeat> lib;
 
-	ArrayList<ArrayList<Double>> entropyMean = new ArrayList<ArrayList<Double>>();
+	List<ArrayList<Double>> entropyMean = new ArrayList<ArrayList<Double>>();
 	ArrayList<ArrayList<Double>> entropyVar = new ArrayList<ArrayList<Double>>();
 
-	int[] attr = {
-			40,
-			 6,
-			20,
-			23,
-			16,
-			21,
-			12,
-			 7,
-			51,
-			50,
-			 4,
-			17,
-			41,
-			53,
-			39,
-			46,
-			66,
-			 5,
-			19,
-			49,
-			15,
-			22,
-			25,
-			56,
-			14,
-			37,
-			44,
-			76,
-			43,
-			38,
-			 3,
-			13,
-			47,
-			68,
-			54,
-			67,
-			52,
-			45,
-			24,
-			48,
-			77,
-			57,
-			78,
-			31,
-			11,
-			58,
-			61,
-			80,
-			81,
-			79,
-			36,
-			60,
-			72,
-			82,
-			42,
-			69,
-			90,
-			73,
-			62,
-			83,
-			71,
-			70,
-			59,
-			94,
-			74,
-			84
-	};
-	double[] weights = {
-			1.91464,
-			1.86173,
-			1.85109,
-			1.78223,
-			1.715  ,
-			1.71424,
-			1.70875,
-			1.69531,
-			1.64979,
-			1.58758,
-			1.54313,
-			1.51859,
-			1.50909,
-			1.5041 ,
-			1.47753,
-			1.4756 ,
-			1.46557,
-			1.44619,
-			1.44179,
-			1.42563,
-			1.39821,
-			1.39804,
-			1.38488,
-			1.38036,
-			1.36769,
-			1.35894,
-			1.35703,
-			1.35376,
-			1.32802,
-			1.31612,
-			1.31367,
-			1.311  ,
-			1.29376,
-			1.28537,
-			1.28117,
-			1.27821,
-			1.26106,
-			1.25526,
-			1.24823,
-			1.24485,
-			1.21422,
-			1.17971,
-			1.17504,
-			1.17398,
-			1.17275,
-			1.1581 ,
-			1.1434 ,
-			1.14247,
-			1.12734,
-			1.11912,
-			1.11113,
-			1.10561,
-			1.10215,
-			1.10036,
-			1.09901,
-			1.08603,
-			1.07385,
-			1.07358,
-			1.06918,
-			1.06747,
-			1.04589,
-			1.03798,
-			1.03701,
-			1.01956,
-			1.01902,
-			1.00377
-	};
+	int[] attr = { 6, 20, 40, 23, 16, 21, 7, 17, 12, 51, 41, 53, 50, 4, 39, 5,
+			66, 19, 22, 56, 49, 76, 15, 46, 14, 3, 67, 13, 54, 25, 44, 38, 77,
+			9, 24, 52, 43, 45, 37, 68, 31, 11, 78, 81, 57, 47, 80, 82, 48, 58,
+			60, 36, 30, 79, 61, 42, 71, 72, 73, 59, 69, 62, 70, 83, 32, 2, 74,
+			84, 55, 90 };
+	double[] weights = { 2.1178, 2.1049, 2.1011, 2.0322, 1.9589, 1.8879,
+			1.8677, 1.7185, 1.7182, 1.6857, 1.6677, 1.666, 1.6497, 1.6487,
+			1.6168, 1.6081, 1.6052, 1.5946, 1.564, 1.4989, 1.4961, 1.4956,
+			1.495, 1.4859, 1.4538, 1.4516, 1.4501, 1.435, 1.4058, 1.405,
+			1.3833, 1.3733, 1.3604, 1.3571, 1.353, 1.3406, 1.3099, 1.298,
+			1.2734, 1.2666, 1.2559, 1.2543, 1.229, 1.2253, 1.2159, 1.2077,
+			1.1925, 1.1649, 1.1628, 1.1434, 1.1417, 1.1379, 1.1368, 1.1366,
+			1.1313, 1.122, 1.1182, 1.1149, 1.1138, 1.1059, 1.0957, 1.0844,
+			1.079, 1.0745, 1.052, 1.0485, 1.0353, 1.0226, 1.0161, 1.0105 };
+	int[] types = {0,1,2,3,4,5,7};
 
-//    mean[1]
-//    mean[2]
-//    sd[1]
-//    crossingCount[1]
-//    resultantAcc
-//    energy[1]
-//    energy[2]
-//    correlation[0]
-//    correlation[1]
-//    correlation[2]
-//    SMA
-//    histogram[0][6]
-//    histogram[1][4]
-//    histogram[2][0]
-//    histogram[2][4]
-//    histogram[2][5]
-//    AR[2][0]
 	
-	public NaiveGaussian(ArrayList<AccFeat> lib) {
+	
+	public NaiveGaussian(List<AccFeat> lib) {
 		this.lib = lib;
 		for (int j = 0; j < attr.length; j++) {
 			attr[j] = attr[j] - 2;
 		}
-		for(Integer i : attr){
-			System.out.println(WekaFileGenerator.intToAttributeName(i));
-		}
+		// for(Integer i : attr){
+		// System.out.println(WekaFileGenerator.intToAttributeName(i));
+		// }
 		ArrayList<Double> m0 = new ArrayList<Double>();
 		ArrayList<Double> m1 = new ArrayList<Double>();
 		ArrayList<Double> m2 = new ArrayList<Double>();
@@ -191,8 +44,8 @@ public class NaiveGaussian {
 		ArrayList<Double> m4 = new ArrayList<Double>();
 		ArrayList<Double> m5 = new ArrayList<Double>();
 		ArrayList<Double> m6 = new ArrayList<Double>();
-//		ArrayList<Double> m7 = new ArrayList<Double>();
-//		ArrayList<Double> m8 = new ArrayList<Double>();
+		 ArrayList<Double> m7 = new ArrayList<Double>();
+		// ArrayList<Double> m8 = new ArrayList<Double>();
 
 		entropyMean.add(0, m0);
 		entropyMean.add(1, m1);
@@ -201,8 +54,8 @@ public class NaiveGaussian {
 		entropyMean.add(4, m4);
 		entropyMean.add(5, m5);
 		entropyMean.add(6, m6);
-//		entropyMean.add(7, m7);
-//		entropyMean.add(8, m8);
+		 entropyMean.add(7, m7);
+		// entropyMean.add(8, m8);
 
 		ArrayList<Double> v0 = new ArrayList<Double>();
 		ArrayList<Double> v1 = new ArrayList<Double>();
@@ -211,8 +64,8 @@ public class NaiveGaussian {
 		ArrayList<Double> v4 = new ArrayList<Double>();
 		ArrayList<Double> v5 = new ArrayList<Double>();
 		ArrayList<Double> v6 = new ArrayList<Double>();
-//		ArrayList<Double> v7 = new ArrayList<Double>();
-//		ArrayList<Double> v8 = new ArrayList<Double>();
+		 ArrayList<Double> v7 = new ArrayList<Double>();
+		// ArrayList<Double> v8 = new ArrayList<Double>();
 
 		entropyVar.add(0, v0);
 		entropyVar.add(1, v1);
@@ -221,105 +74,68 @@ public class NaiveGaussian {
 		entropyVar.add(4, v4);
 		entropyVar.add(5, v5);
 		entropyVar.add(6, v6);
-//		entropyVar.add(7, v7);
-//		entropyVar.add(8, v8);
+		 entropyVar.add(7, v7);
+		// entropyVar.add(8, v8);
 
 		entropy();
 	}
 
 	public void entropy() {
-		for (int i = 0; i < 6; i++) {
-
+		for (int i = 0; i < types.length; i++) {
 			for (int k = 0; k < attr.length; k++) {
-				double mean = getSampleMean(attr[k], i);
-				entropyMean.get(i).add(mean);
-				double var = getSampleVariance(attr[k], i, mean);
-				entropyVar.get(i).add(var);
+				double mean = getSampleMean(attr[k], types[i]);
+				entropyMean.get(types[i]).add(mean);
+				double var = getSampleVariance(attr[k], types[i], mean);
+				entropyVar.get(types[i]).add(var);
 			}
 
-			// if ( i != 6) {
-			// for (int j = 0; j < 6; j++) {
-			// double mean = getSampleMean(j, i);
-			// entropyMean.get(i).add(mean);
-			// double var = getSampleVariance(j, i, mean);
-			// entropyVar.get(i).add(var);
-			// }
-			// for (int j = 17; j < 24; j++) {
-			// double mean = getSampleMean(j, i);
-			// entropyMean.get(i).add(mean);
-			// double var = getSampleVariance(j, i, mean);
-			// entropyVar.get(i).add(var);
-			// }
-			//
-			// for (int j = 84; j < 95; j++) {
-			// double mean = getSampleMean(j, i);
-			// entropyMean.get(i).add(mean);
-			// double var = getSampleVariance(j, i, mean);
-			// entropyVar.get(i).add(var);
-			// }
-			//
-			// }
 		}
 
 	}
 
-	public void classify2(AccFeat q) {
-		System.out.println("\n- Starting NBC Classification");
-		double[] results = new double[6];
+	public Pair<ArrayList<Double>, String> classify(AccFeat q) {
+		String txt = "";
+		txt += ("Gaussian Naive Bayes Classification");
+		double[] results = new double[types.length];
 		double result;
-		ArrayList<Double> qf = new ArrayList<>();
-
-		// for (int j = 0; j < 6; j++) {
-		// qf.add(q.getFeature(j));
-		// }
-		// for (int j = 17; j < 24; j++) {
-		// qf.add(q.getFeature(j));
-		// }
-		// for (int j = 84; j < 95; j++) {
-		// qf.add(q.getFeature(j));
-		// }
-
-		// for(int j=0;j<attr.length;j++){
-		// attr[j]=attr[j]-1;
-		// }
+		ArrayList<Double> qf = new ArrayList<Double>();
 
 		for (int k = 0; k < attr.length; k++) {
 			qf.add(q.getFeature(attr[k]));
 		}
+
 		double weight;
-		for (int i = 0; i < 6; i++) {
-			
+		for (int i = 0; i < types.length; i++) {
 			result = 0;
-			for (int j = 0; j < entropyMean.get(i).size(); j++) {
+			for (int j = 0; j < entropyMean.get(types[i]).size(); j++) {
 				if(weights.length>0) weight=weights[j]; else weight=1;
-				result += Math.log(weight*p(qf.get(j), entropyMean.get(i).get(j),
-						entropyVar.get(i).get(j)));
+				result += Math.log(weight*p(qf.get(j), entropyMean.get(types[i]).get(j),
+						entropyVar.get(types[i]).get(j)));
 
 			}
 			results[i] = result;
-
-		}
+		
+	}
 
 		int maxindex = 0;
 		double maxvalue = results[0];
 
-		for (int i = 0; i < 6; i++) {
-			if (i != 6 && !Double.isNaN(results[i])) {
+		for (int i = 0; i < results.length; i++) {
+			if (!Double.isNaN(results[i])) {
 				maxvalue = results[i];
 				maxindex = i;
 				break;
 			}
 		}
 
-		for (int i = 0; i < 6; i++) {
-
+		for (int i = 0; i < types.length; i++) {
 			if (!Double.isNaN(results[i])) {
-
-				if (results[i] != 0.0) {
-					System.out.println("[" + i + "] " + Math.exp(results[i])
-							+ " log:" + results[i]);
-				}
-				if (results[i] > results[maxindex] && i != 6) {
+				DecimalFormat df = new DecimalFormat("0.00E000");
+				txt += ("\n[" + types[i] + "] " 
+//				+ df.format(Math.exp(results[i]))
+						+ " log:" + String.format("%.5f", results[i]));
+				// }
+				if (results[i] > results[maxindex]) {
 					maxvalue = results[i];
 					maxindex = i;
 				}
@@ -327,16 +143,26 @@ public class NaiveGaussian {
 
 		}
 
-		for (int i = 0; i < results.length; i++) {
-			if (i != maxindex && i != 6) {
-				System.out.println("    Type #" + i + " : "
-						+ String.format("%.2f", results[i] / results[maxindex])
-						+ " times less likely.");
-			}
-		}
-		System.out.println("");
+		// for (int i = 0; i < results.length; i++) {
+		// if (i != maxindex) {
+		// String value = String.format("%.2f", results[i] / results[maxindex]);
+		// if(value.equals("Infinity")) value = "inf.";
+		// txt += ("\n   Type #" + i + " : "
+		// + value + " times less likely.");
+		// }
+		// }
+		// txt += ("\n");
 
-		System.out.println("- This is an activity of type #" + maxindex);
+		txt += ("\nClassified as type: " + FeatureExtractors.getType(types[maxindex]));
+
+		ArrayList<Double> resultsArrayList = new ArrayList<Double>();
+		for (Double d : results) {
+			resultsArrayList.add(d);
+		}
+
+		org.apache.commons.math3.util.Pair<ArrayList<Double>, String> pair = new org.apache.commons.math3.util.Pair<ArrayList<Double>, String>(
+				resultsArrayList, txt);
+		return pair;
 
 	}
 
@@ -381,11 +207,15 @@ public class NaiveGaussian {
 		return new Attribute(mean, var);
 	}
 
-	public ArrayList<ArrayList<Double>> getEntropyMean() {
+	public List<ArrayList<Double>> getEntropyMean() {
 		return entropyMean;
 	}
 
 	public ArrayList<ArrayList<Double>> getEntropyVar() {
 		return entropyVar;
+	}
+
+	public int[] getTypes() {
+		return types;
 	}
 }
