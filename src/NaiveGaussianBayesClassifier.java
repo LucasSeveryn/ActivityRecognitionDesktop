@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.commons.math3.*;
 import org.apache.commons.math3.util.Pair;
 
-public class NaiveGaussian {
+public class NaiveGaussianBayesClassifier {
 	List<AccFeat> lib;
 
 	List<ArrayList<Double>> entropyMean = new ArrayList<ArrayList<Double>>();
@@ -16,20 +16,23 @@ public class NaiveGaussian {
 			9, 24, 52, 43, 45, 37, 68, 31, 11, 78, 81, 57, 47, 80, 82, 48, 58,
 			60, 36, 30, 79, 61, 42, 71, 72, 73, 59, 69, 62, 70, 83, 32, 2, 74,
 			84, 55, 90 };
-	double[] weights = { 2.1178, 2.1049, 2.1011, 2.0322, 1.9589, 1.8879,
-			1.8677, 1.7185, 1.7182, 1.6857, 1.6677, 1.666, 1.6497, 1.6487,
-			1.6168, 1.6081, 1.6052, 1.5946, 1.564, 1.4989, 1.4961, 1.4956,
-			1.495, 1.4859, 1.4538, 1.4516, 1.4501, 1.435, 1.4058, 1.405,
-			1.3833, 1.3733, 1.3604, 1.3571, 1.353, 1.3406, 1.3099, 1.298,
-			1.2734, 1.2666, 1.2559, 1.2543, 1.229, 1.2253, 1.2159, 1.2077,
-			1.1925, 1.1649, 1.1628, 1.1434, 1.1417, 1.1379, 1.1368, 1.1366,
-			1.1313, 1.122, 1.1182, 1.1149, 1.1138, 1.1059, 1.0957, 1.0844,
-			1.079, 1.0745, 1.052, 1.0485, 1.0353, 1.0226, 1.0161, 1.0105 };
-	int[] types = {0,1,2,3,4,5,7};
+//	double[] weights = { 2.1178, 2.1049, 2.1011, 2.0322, 1.9589, 1.8879,
+//			1.8677, 1.7185, 1.7182, 1.6857, 1.6677, 1.666, 1.6497, 1.6487,
+//			1.6168, 1.6081, 1.6052, 1.5946, 1.564, 1.4989, 1.4961, 1.4956,
+//			1.495, 1.4859, 1.4538, 1.4516, 1.4501, 1.435, 1.4058, 1.405,
+//			1.3833, 1.3733, 1.3604, 1.3571, 1.353, 1.3406, 1.3099, 1.298,
+//			1.2734, 1.2666, 1.2559, 1.2543, 1.229, 1.2253, 1.2159, 1.2077,
+//			1.1925, 1.1649, 1.1628, 1.1434, 1.1417, 1.1379, 1.1368, 1.1366,
+//			1.1313, 1.122, 1.1182, 1.1149, 1.1138, 1.1059, 1.0957, 1.0844,
+//			1.079, 1.0745, 1.052, 1.0485, 1.0353, 1.0226, 1.0161, 1.0105 };
+//	int[] attr = { 
+//			2,3,4,5,6,7};
+	int[] weights={};
+	int[] types = {0,1,2,3,4,5,6,7};
 
 	
 	
-	public NaiveGaussian(List<AccFeat> lib) {
+	public NaiveGaussianBayesClassifier(List<AccFeat> lib) {
 		this.lib = lib;
 		for (int j = 0; j < attr.length; j++) {
 			attr[j] = attr[j] - 2;
@@ -201,12 +204,7 @@ public class NaiveGaussian {
 		return sum / count;
 	}
 
-	public Attribute getMeanAndVariance(int feature, int type) {
-		double mean = entropyMean.get(type).get(feature);
-		double var = getSampleVariance(feature, type, mean);
-		return new Attribute(mean, var);
-	}
-
+	
 	public List<ArrayList<Double>> getEntropyMean() {
 		return entropyMean;
 	}

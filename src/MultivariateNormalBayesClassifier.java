@@ -4,24 +4,22 @@ import java.util.List;
 
 import org.apache.commons.math3.util.Pair;
 
-
 import Jama.Matrix;
 
-public class MultivariateGaussian {
+public class MultivariateNormalBayesClassifier {
 	List<AccFeat> lib;
-
-	List<ArrayList<Double>> entropyMean = new ArrayList<ArrayList<Double>>();
-	List<ArrayList<Double>> entropyVar = new ArrayList<ArrayList<Double>>();
+	List<ArrayList<Double>> meanVectors = new ArrayList<ArrayList<Double>>();
+	List<ArrayList<Double>> varianceVectors = new ArrayList<ArrayList<Double>>();
 	List<CMatrix> cMatrices = new ArrayList<CMatrix>();
 	int[] attr = { 
 			2,3,4,5,6,7};
-	int[] types = {0,1,2,3,4,5,7};
+	int[] types = {0,1,2,3,4,5,6,7};
 
 
 	
 	double getCovariance(int featureX, int featureY, int type) {
-		double meanX = entropyMean.get(type).get(featureX);
-		double meanY = entropyVar.get(type).get(featureY);
+		double meanX = meanVectors.get(type).get(featureX);
+		double meanY = varianceVectors.get(type).get(featureY);
 
 		double sum = 0;
 		int count = 0;
@@ -54,6 +52,12 @@ public class MultivariateGaussian {
 			}
 			
 		}
+		
+		
+		CMatrix(double[][] mat){
+			this.mat=mat;
+			this.d=mat[0].length;
+		}
 
 		double get(int i, int j) {
 			return mat[i][j];
@@ -73,34 +77,46 @@ public class MultivariateGaussian {
 
 	}
 
+	public MultivariateNormalBayesClassifier(List<ArrayList<Double>> m, List<ArrayList<Double>> v, List<double[][]> covM){
+		for (int j = 0; j < attr.length; j++) {
+			attr[j] = attr[j] - 2;
+		}
+		this.meanVectors=m;
+		this.varianceVectors=v;
+		for(int i=0;i<covM.size();i++){
+			cMatrices.add(new CMatrix(covM.get(i)));
+		}
 
-	public MultivariateGaussian(List<AccFeat> lib) {
+	}
+	
+	
+	public MultivariateNormalBayesClassifier(List<AccFeat> lib) {
 		this.lib = lib;
 		for (int j = 0; j < attr.length; j++) {
 			attr[j] = attr[j] - 2;
 		}
-		for (Integer i : attr) {
-			System.out.println(WekaFileGenerator.intToAttributeName(i));
-		}
+//		for (Integer i : attr) {
+//			System.out.println(WekaFileGenerator.intToAttributeName(i));
+//		}
 		ArrayList<Double> m0 = new ArrayList<Double>();
 		ArrayList<Double> m1 = new ArrayList<Double>();
 		ArrayList<Double> m2 = new ArrayList<Double>();
 		ArrayList<Double> m3 = new ArrayList<Double>();
 		ArrayList<Double> m4 = new ArrayList<Double>();
 		ArrayList<Double> m5 = new ArrayList<Double>();
-		ArrayList<Double> m6 = null;
-//		ArrayList<Double> m6 = new ArrayList<Double>();
+//		ArrayList<Double> m6 = null;
+		ArrayList<Double> m6 = new ArrayList<Double>();
 		 ArrayList<Double> m7 = new ArrayList<Double>();
 		// ArrayList<Double> m8 = new ArrayList<Double>();
 
-		entropyMean.add(0, m0);
-		entropyMean.add(1, m1);
-		entropyMean.add(2, m2);
-		entropyMean.add(3, m3);
-		entropyMean.add(4, m4);
-		entropyMean.add(5, m5);
-		entropyMean.add(6, m6);
-		 entropyMean.add(7, m7);
+		meanVectors.add(0, m0);
+		meanVectors.add(1, m1);
+		meanVectors.add(2, m2);
+		meanVectors.add(3, m3);
+		meanVectors.add(4, m4);
+		meanVectors.add(5, m5);
+		meanVectors.add(6, m6);
+		 meanVectors.add(7, m7);
 		// entropyMean.add(8, m8);
 
 		ArrayList<Double> v0 = new ArrayList<Double>();
@@ -109,21 +125,26 @@ public class MultivariateGaussian {
 		ArrayList<Double> v3 = new ArrayList<Double>();
 		ArrayList<Double> v4 = new ArrayList<Double>();
 		ArrayList<Double> v5 = new ArrayList<Double>();
-		ArrayList<Double> v6 = null;
-//		ArrayList<Double> v6 = new ArrayList<Double>();
+//		ArrayList<Double> v6 = null;
+		ArrayList<Double> v6 = new ArrayList<Double>();
 		 ArrayList<Double> v7 = new ArrayList<Double>();
 		// ArrayList<Double> v8 = new ArrayList<Double>();
 
-		entropyVar.add(0, v0);
-		entropyVar.add(1, v1);
-		entropyVar.add(2, v2);
-		entropyVar.add(3, v3);
-		entropyVar.add(4, v4);
-		entropyVar.add(5, v5);
-		entropyVar.add(6, v6);
-		 entropyVar.add(7, v7);
+
+		 
+		 
+		varianceVectors.add(0, v0);
+		varianceVectors.add(1, v1);
+		varianceVectors.add(2, v2);
+		varianceVectors.add(3, v3);
+		varianceVectors.add(4, v4);
+		varianceVectors.add(5, v5);
+		varianceVectors.add(6, v6);
+		 varianceVectors.add(7, v7);
 		// entropyVar.add(8, v8);
 
+		
+		 
 		entropy();
 
 		CMatrix t0 = new CMatrix(0);
@@ -132,8 +153,8 @@ public class MultivariateGaussian {
 		CMatrix t3 = new CMatrix(3);
 		CMatrix t4 = new CMatrix(4);
 		CMatrix t5 = new CMatrix(5);
-		CMatrix t6 = null;
-//		CMatrix t6 = new CMatrix(6);
+//		CMatrix t6 = null;
+		CMatrix t6 = new CMatrix(6);
 		CMatrix t7 = new CMatrix(7);
 //		CMatrix t8 = new CMatrix(8);
 		cMatrices.add(t0);
@@ -152,9 +173,9 @@ public class MultivariateGaussian {
 		for (int i = 0; i < types.length; i++) {
 			for (int k = 0; k < attr.length; k++) {
 				double mean = getSampleMean(attr[k], types[i]);
-				entropyMean.get(types[i]).add(mean);
+				meanVectors.get(types[i]).add(mean);
 				double var = getSampleVariance(attr[k], types[i], mean);
-				entropyVar.get(types[i]).add(var);
+				varianceVectors.get(types[i]).add(var);
 			}
 
 		}
@@ -177,7 +198,7 @@ public class MultivariateGaussian {
 		double[][] xminusm = new double[attr.length][1];
 		double difference;
 		for (int i = 0; i < (attr.length); i++) {
-			difference = qf.get(i) - entropyMean.get(type).get(i);
+			difference = qf.get(i) - meanVectors.get(type).get(i);
 			xminusmt[0][i] = difference;
 			xminusm[i][0] = difference;
 		}
@@ -212,10 +233,7 @@ public class MultivariateGaussian {
 		for (int i = 0; i < types.length; i++) {
 			results[i] = p(qf, types[i]);
 			if (!Double.isNaN(results[i])) {
-//				DecimalFormat df = new DecimalFormat("0.00E000");
-				txt += ("\n[" + types[i] + "] " 
-//				+ df.format(Math.exp(results[i]))
-//						+ " log:" + results[i]);
+				txt += ("\n[" + types[i] + "] -" 
 				+ String.format("%.5f", Math.log(results[i])));
 				 }
 
@@ -238,7 +256,7 @@ public class MultivariateGaussian {
 		
 		ArrayList<Double> resultsArrayList = new ArrayList<Double>();
 		for (Double d : results) {
-			resultsArrayList.add(-d);
+			resultsArrayList.add(-Math.log(d));
 		}
 		
 		Pair<ArrayList<Double>, String> pair = 
@@ -271,17 +289,16 @@ public class MultivariateGaussian {
 		return sum / count;
 	}
 
-	public Attribute getMeanAndVariance(int feature, int type) {
-		double mean = entropyMean.get(type).get(feature);
-		double var = getSampleVariance(feature, type, mean);
-		return new Attribute(mean, var);
-	}
 
 	public List<ArrayList<Double>> getEntropyMean() {
-		return entropyMean;
+		return meanVectors;
 	}
 
 	public List<ArrayList<Double>> getEntropyVar() {
-		return entropyVar;
+		return varianceVectors;
+	}
+
+	public List<CMatrix> getcMatrices() {
+		return cMatrices;
 	}
 }
